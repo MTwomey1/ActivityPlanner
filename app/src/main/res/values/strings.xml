@@ -1,3 +1,19 @@
 <resources>
     <string name="app_name">Activity Planner</string>
+    <string name="username_string">Username:</string>
+    <string name="email_string">Email:</string>
+    <string name="password_string">Password:</string>
+    <string name="confirm_password_string">Confirm password:</string>
+    <string name="first_name_string">First name:</string>
+    <string name="last_name_string">Last name:</string>
+    <string name="username_string2">Username</string>
+    <string name="email_string2">Email</string>
+    <string name="password_string2">Password</string>
+    <string name="confirm_password_string2">Confirm password</string>
+    <string name="first_name_string2">First name</string>
+    <string name="last_name_string2">Last name</string>
+    <string name="register_string">Register</string>
+    <string name="login_string">log In</string>
+    <string name="register_help_string">Enter your details to register!</string>
+    <string name="login_help_string">Enter your details to log In!</string>
 </resources>
