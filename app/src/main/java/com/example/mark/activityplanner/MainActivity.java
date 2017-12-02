@@ -24,7 +24,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         btn_register.setOnClickListener(this);
         btn_login.setOnClickListener(this);
-        tv_welcome.setText("Welcome to Acitvity Planner!");
+        tv_welcome.setText("Welcome to Activity Planner!");
     }
 
     @Override

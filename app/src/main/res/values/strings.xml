@@ -16,4 +16,5 @@
     <string name="login_string">log In</string>
     <string name="register_help_string">Enter your details to register!</string>
     <string name="login_help_string">Enter your details to log In!</string>
+    <string name="welcome_string">Welcome </string>
 </resources>

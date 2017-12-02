@@ -18,9 +18,10 @@ public class User {
         this.lastname = lastname;
     }
 
-    public User(String username, String firstname, String lastname) {
+    public User(String username, String password) {
 
         this.username = username;
+        this.password = password;
         this.firstname = "";
         this.lastname = "";
 

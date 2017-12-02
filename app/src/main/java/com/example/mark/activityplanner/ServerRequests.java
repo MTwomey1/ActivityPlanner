@@ -152,18 +152,18 @@ public class ServerRequests {
         new connection(data_to_send, "Register.php", string_callback).execute();
     }
 
-    // for logging in
-    public void fetch_user_data_in_background(User user, Get_String_Callback string_callback) {
+    public void login_user(User user, Get_String_Callback string_callback) {
 
         // place data to send in a HashMap
         Map<String, String> data_to_send = new HashMap<>();
         data_to_send.put("username", user.username);
+        data_to_send.put("password", user.password);
 
         // show progress
         progressDialog.show();
 
         // send data to sever - the sever will echo back the results
-        new connection(data_to_send, "fetch_user_data.php", string_callback).execute();
+        new connection(data_to_send, "Login.php", string_callback).execute();
 
     }
 

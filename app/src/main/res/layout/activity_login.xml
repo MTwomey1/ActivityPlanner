@@ -59,6 +59,7 @@
 
     <Button
         android:id="@+id/btn_user_login_id"
+        style="@style/Widget.AppCompat.Button.Colored"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"

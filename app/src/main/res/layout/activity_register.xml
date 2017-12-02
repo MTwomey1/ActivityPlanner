@@ -92,6 +92,7 @@
 
     <Button
         android:id="@+id/btn_reg_user_id"
+        style="@style/Widget.AppCompat.Button.Colored"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
@@ -105,9 +106,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="32dp"
+        android:layout_marginStart="32dp"
         android:text="@string/username_string"
         app:layout_constraintBaseline_toBaselineOf="@id/et_username_id"
-        app:layout_constraintLeft_toLeftOf="parent" android:layout_marginStart="32dp" />
+        app:layout_constraintLeft_toLeftOf="parent" />
 
     <TextView
         android:id="@+id/textView4"
