@@ -68,7 +68,6 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
 
                     try {
                         Log.d("myTag","String fill");
-                        Log.d("hello",returned_string);
 
                         // Create a JSONObject from the returned String
                         JSONObject jObject = new JSONObject(returned_string);
@@ -82,7 +81,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                         //User user = new User(username,password,email,firstname,lastname);
                         //log_user_in(user);
 
-                        Intent intent = new Intent(Login.this, UserArea.class);
+                        Intent intent = new Intent(Login.this, UserHome.class);
                         intent.putExtra("username", username);
                         intent.putExtra("firstname", firstname);
 
