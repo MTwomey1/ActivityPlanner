@@ -1,6 +1,8 @@
 package com.example.mark.activityplanner;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -76,14 +78,19 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                         //String password = jObject.getString("password");
                        // String email = jObject.getString("email");
                         String firstname = jObject.getString("firstname");
-                        //String lastname = jObject.getString("lastname");
+                        String lastname = jObject.getString("lastname");
 
                         //User user = new User(username,password,email,firstname,lastname);
                         //log_user_in(user);
 
                         Intent intent = new Intent(Login.this, UserHome.class);
-                        intent.putExtra("username", username);
-                        intent.putExtra("firstname", firstname);
+
+                        SharedPreferences sharedPref = getSharedPreferences("userInfo", Context.MODE_PRIVATE);
+                        SharedPreferences.Editor editor = sharedPref.edit();
+                        editor.putString("firstname", firstname);
+                        editor.putString("lastname", lastname);
+                        editor.putBoolean("IS_LOGIN", true);
+                        editor.apply();
 
                         Login.this.startActivity(intent);
 
