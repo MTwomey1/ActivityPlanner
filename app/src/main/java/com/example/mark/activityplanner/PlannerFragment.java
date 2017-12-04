@@ -6,6 +6,11 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -13,6 +18,7 @@ import android.view.ViewGroup;
  */
 public class PlannerFragment extends Fragment {
 
+    private ListView lv;
 
     public PlannerFragment() {
         // Required empty public constructor
@@ -20,10 +26,22 @@ public class PlannerFragment extends Fragment {
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_planner, container, false);
+
+        lv = view.findViewById(R.id.listView);
+        List<String> mArrayList = new ArrayList<>();
+        for (int i = 1; i < 11; i++) {
+            mArrayList.add("Plan "+ i);
+        }
+
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(
+                getActivity(),
+                android.R.layout.simple_list_item_1,
+                mArrayList);
+        lv.setAdapter(arrayAdapter);
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_planner, container, false);
+        return view;
     }
 
 }

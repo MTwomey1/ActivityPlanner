@@ -24,6 +24,8 @@
     <string name="upcomming_plans_string">Upcomming Plans</string>
     <string name="find_string">Find</string>
     <string name="create_string">Create</string>
+    <string name="media_string">Photos</string>
+    <string name="youtube_string">YouTube</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
