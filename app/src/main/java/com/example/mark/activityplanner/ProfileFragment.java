@@ -1,7 +1,10 @@
 package com.example.mark.activityplanner;
 
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -10,6 +13,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -18,13 +22,15 @@ import java.util.ArrayList;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ProfileFragment extends Fragment {
+public class ProfileFragment extends Fragment implements View.OnClickListener {
 
     TextView tv_fullname;
     private RecyclerView mRecycleView;
     private RecyclerView.LayoutManager mLayoutManager;
     private RecyclerView.Adapter mAdapter;
     private ArrayList<String> mDataset;
+    private ImageButton btn_logout;
+    //SharedPreferences sharedPref = this.getActivity().getSharedPreferences("userInfo", Context.MODE_PRIVATE);
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -36,6 +42,7 @@ public class ProfileFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
 
         tv_fullname = view.findViewById(R.id.tv_fullname_id);
+        btn_logout = view.findViewById(R.id.imageButton_ID);
 
         SharedPreferences sharedPref = this.getActivity().getSharedPreferences("userInfo", Context.MODE_PRIVATE);
         String firstname = sharedPref.getString("firstname","");
@@ -54,8 +61,44 @@ public class ProfileFragment extends Fragment {
         mAdapter = new MainAdapter(mDataset);
         mRecycleView.setAdapter(mAdapter);
 
+        btn_logout.setOnClickListener(this);
+
         // Inflate the layout for this fragment
         return view;
     }
+
+        public void onClick(View view) {
+            switch (view.getId()) {
+                case R.id.imageButton_ID: {
+
+                    AlertDialog.Builder altdial = new AlertDialog.Builder(ProfileFragment.this.getActivity());
+                    altdial.setMessage("Are you sure you want to logout?").setCancelable(false)
+                            .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    SharedPreferences sharedPref = getActivity().getSharedPreferences("userInfo", Context.MODE_PRIVATE);
+                                    SharedPreferences.Editor editor = sharedPref.edit();
+                                    editor.putBoolean("IS_LOGIN", false);
+                                    editor.apply();
+                                    Intent intent = new Intent(getActivity(), MainActivity.class);
+                                    startActivity(intent);
+                                    getActivity().finish();
+
+                                }
+                            })
+                            .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    dialogInterface.cancel();
+                                }
+                            });
+                    AlertDialog alert = altdial.create();
+                    alert.setTitle("Alert!");
+                    alert.show();
+
+                    break;
+                }
+            }
+        }
 
 }
