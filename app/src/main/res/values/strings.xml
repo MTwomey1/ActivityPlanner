@@ -26,6 +26,10 @@
     <string name="create_string">Create</string>
     <string name="media_string">Photos</string>
     <string name="youtube_string">YouTube</string>
+    <string name="create_plan_string">Create Plan</string>
+    <string name="activity_string">Activity</string>
+    <string name="date_string">Date</string>
+    <string name="invite_friends_string">Invite Friends</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

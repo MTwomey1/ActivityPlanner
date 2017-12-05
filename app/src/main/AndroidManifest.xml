@@ -24,6 +24,7 @@
         <activity
             android:name=".UserHome"
             android:label="@string/title_activity_user_home" />
+        <activity android:name=".CreatePlans"></activity>
     </application>
 
 </manifest>
