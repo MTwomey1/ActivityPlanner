@@ -30,7 +30,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     private RecyclerView.Adapter mAdapter;
     private ArrayList<String> mDataset;
     private ImageButton btn_logout;
-    //SharedPreferences sharedPref = this.getActivity().getSharedPreferences("userInfo", Context.MODE_PRIVATE);
+    private ImageButton btn_manage;
+
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -43,6 +44,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
 
         tv_fullname = view.findViewById(R.id.tv_fullname_id);
         btn_logout = view.findViewById(R.id.imageButton_ID);
+        btn_manage = view.findViewById(R.id.manage_btn_id);
 
         SharedPreferences sharedPref = this.getActivity().getSharedPreferences("userInfo", Context.MODE_PRIVATE);
         String firstname = sharedPref.getString("firstname","");
@@ -62,6 +64,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         mRecycleView.setAdapter(mAdapter);
 
         btn_logout.setOnClickListener(this);
+        btn_manage.setOnClickListener(this);
 
         // Inflate the layout for this fragment
         return view;
@@ -95,6 +98,12 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                     AlertDialog alert = altdial.create();
                     alert.setTitle("Alert!");
                     alert.show();
+
+                    break;
+                }
+                case R.id.manage_btn_id: {
+                    Intent manageIntent = new Intent(getActivity(), EditProfile.class);
+                    startActivity(manageIntent);
 
                     break;
                 }
