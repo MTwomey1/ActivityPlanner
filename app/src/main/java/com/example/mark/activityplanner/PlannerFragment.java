@@ -1,9 +1,12 @@
 package com.example.mark.activityplanner;
 
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +25,7 @@ public class PlannerFragment extends Fragment implements View.OnClickListener {
 
     private ListView lv;
     Button btn_create_plans;
+    String username;
 
     public PlannerFragment() {
         // Required empty public constructor
@@ -31,6 +35,10 @@ public class PlannerFragment extends Fragment implements View.OnClickListener {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_planner, container, false);
+
+        SharedPreferences sharedPref = this.getActivity().getSharedPreferences("userInfo", Context.MODE_PRIVATE);
+        username = sharedPref.getString("username", null);
+        retrieve_plans(username);
 
         lv = view.findViewById(R.id.listView);
         List<String> mArrayList = new ArrayList<>();
@@ -49,6 +57,16 @@ public class PlannerFragment extends Fragment implements View.OnClickListener {
 
         // Inflate the layout for this fragment
         return view;
+    }
+
+    private void retrieve_plans(String username) {
+        ServerRequests server_requests = new ServerRequests(this.getActivity());
+        server_requests.retrieve_plans(username, new Get_String_Callback() {
+            @Override
+            public void done(String returned_string) {
+                Log.d("myTag", returned_string);
+            }
+        });
     }
 
     @Override
