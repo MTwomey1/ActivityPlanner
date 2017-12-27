@@ -167,4 +167,19 @@ public class ServerRequests {
 
     }
 
+    public void create_plan(String username, String activity, String date, String location, Get_String_Callback string_callback){
+
+        Map<String, String> data_to_send = new HashMap<>();
+        data_to_send.put("username", username);
+        data_to_send.put("activity", activity);
+        data_to_send.put("date", date);
+        data_to_send.put("location", location);
+
+        // show progress
+        progressDialog.show();
+
+        // send data to sever - the sever will echo back the results
+        new connection(data_to_send, "CreatePlan.php", string_callback).execute();
+    }
+
 }
