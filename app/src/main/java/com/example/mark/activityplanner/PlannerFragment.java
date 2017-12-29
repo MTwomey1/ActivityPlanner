@@ -14,6 +14,8 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,8 +26,10 @@ import java.util.List;
 public class PlannerFragment extends Fragment implements View.OnClickListener {
 
     private ListView lv;
+    PlanAdapter planAdapter;
     Button btn_create_plans;
     String username;
+    List<String> mArrayList = new ArrayList<>();
 
     public PlannerFragment() {
         // Required empty public constructor
@@ -38,19 +42,21 @@ public class PlannerFragment extends Fragment implements View.OnClickListener {
 
         SharedPreferences sharedPref = this.getActivity().getSharedPreferences("userInfo", Context.MODE_PRIVATE);
         username = sharedPref.getString("username", null);
-        retrieve_plans(username);
 
         lv = view.findViewById(R.id.listView);
-        List<String> mArrayList = new ArrayList<>();
-        for (int i = 1; i < 11; i++) {
-            mArrayList.add("Plan "+ i);
-        }
+        planAdapter = new PlanAdapter(this.getActivity(), R.layout.row_layout);
+        //List<String> mArrayList = new ArrayList<>();
+        //for (int i = 1; i < 11; i++) {
+       //     mArrayList.add("Plan "+ i);
+        //}
 
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(
+        /*ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(
                 getActivity(),
                 android.R.layout.simple_list_item_1,
                 mArrayList);
-        lv.setAdapter(arrayAdapter);
+        */
+        lv.setAdapter(planAdapter);
+        retrieve_plans(username);
 
         btn_create_plans = view.findViewById(R.id.btn_create_id);
         btn_create_plans.setOnClickListener(this);
@@ -64,7 +70,21 @@ public class PlannerFragment extends Fragment implements View.OnClickListener {
         server_requests.retrieve_plans(username, new Get_String_Callback() {
             @Override
             public void done(String returned_string) {
-                Log.d("myTag", returned_string);
+                //Log.d("myTag", returned_string);
+                try{
+                    JSONObject jObject = new JSONObject(returned_string);
+
+                    for (int i = 0; i < jObject.length(); i++){
+                        String username  = jObject.get("username"+i).toString() + " ";
+                        String activity  = jObject.get("activity"+i).toString() + " ";
+                        String date  = jObject.get("date"+i).toString() + " ";
+                        String location = jObject.get("location"+i).toString();
+                        Plan plan = new Plan(username, activity, date, location);
+                        planAdapter.add(plan);
+                    }
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
             }
         });
     }
