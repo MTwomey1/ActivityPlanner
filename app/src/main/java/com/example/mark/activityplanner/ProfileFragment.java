@@ -6,10 +6,13 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +20,9 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Set;
 
 
 /**
@@ -24,7 +30,7 @@ import java.util.ArrayList;
  */
 public class ProfileFragment extends Fragment implements View.OnClickListener {
 
-    TextView tv_fullname;
+    TextView tv_fullname, tv_activities;
     private RecyclerView mRecycleView;
     private RecyclerView.LayoutManager mLayoutManager;
     private RecyclerView.Adapter mAdapter;
@@ -38,6 +44,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
 
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
@@ -45,11 +52,28 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         tv_fullname = view.findViewById(R.id.tv_fullname_id);
         btn_logout = view.findViewById(R.id.imageButton_ID);
         btn_manage = view.findViewById(R.id.manage_btn_id);
+        tv_activities = view.findViewById(R.id.tv_activities_id);
 
         SharedPreferences sharedPref = this.getActivity().getSharedPreferences("userInfo", Context.MODE_PRIVATE);
         String firstname = sharedPref.getString("firstname","");
         String lastname = sharedPref.getString("lastname","");
         tv_fullname.setText(firstname + " " + lastname);
+
+        if(sharedPref.contains("Activities")) {
+            Set<String> set = sharedPref.getStringSet("Activities", null);
+            List<String> sample = new ArrayList<String>(set);
+
+            sample.sort(new Comparator<String>() {
+                @Override
+                public int compare(String lhs, String rhs) {
+                    return lhs.compareTo(rhs);
+                }
+            });
+
+            for (String o : sample) {
+                tv_activities.append(o + ", ");
+            }
+        }
 
         mDataset = new ArrayList<>();
         for (int i = 1; i < 11; i++) {

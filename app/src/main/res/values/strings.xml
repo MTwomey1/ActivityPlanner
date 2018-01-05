@@ -41,4 +41,8 @@
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
     <string name="update">Update</string>
+    <string name="creator">Creator</string>
+    <string name="location">Location</string>
+    <string name="date">Date</string>
+    <string name="activity">Activity</string>
 </resources>

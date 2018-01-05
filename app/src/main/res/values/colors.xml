@@ -5,4 +5,6 @@
     <color name="colorAccent">#FF4081</color>
     <color name="foreground_material_light_1">#049e49</color>
     <color name="actionBarColor">#d60d7e5d</color>
+    <color name="actionBarColor2">#9e0d7e5d</color>
+    <color name="white">#ffffff</color>
 </resources>

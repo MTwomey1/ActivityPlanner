@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
@@ -45,18 +46,19 @@ public class PlannerFragment extends Fragment implements View.OnClickListener {
 
         lv = view.findViewById(R.id.listView);
         planAdapter = new PlanAdapter(this.getActivity(), R.layout.row_layout);
-        //List<String> mArrayList = new ArrayList<>();
-        //for (int i = 1; i < 11; i++) {
-       //     mArrayList.add("Plan "+ i);
-        //}
 
-        /*ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(
-                getActivity(),
-                android.R.layout.simple_list_item_1,
-                mArrayList);
-        */
         lv.setAdapter(planAdapter);
         retrieve_plans(username);
+
+        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Intent planIntent = new Intent(PlannerFragment.this.getActivity(), ViewPlan.class);
+                planIntent.putExtra("Plan", lv.getItemAtPosition(i).toString());
+                Log.d("myTag", lv.getItemAtPosition(i).toString());
+                startActivity(planIntent);
+            }
+        });
 
         btn_create_plans = view.findViewById(R.id.btn_create_id);
         btn_create_plans.setOnClickListener(this);

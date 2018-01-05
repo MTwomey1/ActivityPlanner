@@ -20,12 +20,14 @@
         </activity>
         <activity android:name=".Register" />
         <activity android:name=".Login" />
-        <activity android:name=".UserArea" />
+        <activity android:name=".UserArea"  />
         <activity
             android:name=".UserHome"
-            android:label="@string/title_activity_user_home" />
+            android:label="@string/title_activity_user_home"
+            android:windowSoftInputMode="adjustPan"/>
         <activity android:name=".CreatePlans" />
-        <activity android:name=".EditProfile"></activity>
+        <activity android:name=".EditProfile" />
+        <activity android:name=".ViewPlan"></activity>
     </application>
 
 </manifest>

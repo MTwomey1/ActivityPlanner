@@ -45,31 +45,30 @@ public class PlanAdapter extends ArrayAdapter{
 
         View row;
         row = convertView;
-        UserHolder userHolder;
+        PlanHolder planHolder;
         if (row == null){
             LayoutInflater layoutInflater = (LayoutInflater) this.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             row = layoutInflater.inflate(R.layout.row_layout,parent,false);
-            userHolder = new UserHolder();
-            userHolder.tx_username = row.findViewById(R.id.tx_username);
-            userHolder.tx_activity = row.findViewById(R.id.tx_activity);
-            userHolder.tx_date = row.findViewById(R.id.tx_date);
-            userHolder.tx_location = row.findViewById(R.id.tx_location);
-            row.setTag(userHolder);
+            planHolder = new PlanHolder();
+            planHolder.tx_username = row.findViewById(R.id.tx_username);
+            planHolder.tx_activity = row.findViewById(R.id.tx_activity);
+            planHolder.tx_date = row.findViewById(R.id.tx_date);
+            //planHolder.tx_location = row.findViewById(R.id.tx_location);
+            row.setTag(planHolder);
         }
         else{
-            userHolder = (UserHolder)row.getTag();
+            planHolder = (PlanHolder)row.getTag();
         }
 
-        //User user = (User) this.getItem(position);
         Plan plan = (Plan) this.getItem(position);
-        userHolder.tx_username.setText(plan.getUsername());
-        userHolder.tx_activity.setText(plan.getActivity());
-        userHolder.tx_date.setText(plan.getDate());
-        userHolder.tx_location.setText(plan.getLocation());
+        planHolder.tx_username.setText(plan.getUsername());
+        planHolder.tx_activity.setText(plan.getActivity());
+        planHolder.tx_date.setText(plan.getDate());
+        //planHolder.tx_location.setText(plan.getLocation());
         return row;
     }
 
-    static class UserHolder{
+    static class PlanHolder{
         TextView tx_username, tx_activity, tx_date, tx_location;
     }
 }
