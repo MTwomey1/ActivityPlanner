@@ -8,8 +8,6 @@ import android.widget.TextView;
 public class ViewPlan extends AppCompatActivity {
 
     TextView tv_plan;
-    int pos = 0;
-    Plan plan;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -18,12 +16,17 @@ public class ViewPlan extends AppCompatActivity {
 
         tv_plan = findViewById(R.id.tv_plan_id);
 
-        /*Bundle bundle = getIntent().getExtras();
-        if(bundle != null){
-            tv_plan.setText(bundle.getString("Plan"));
-        }*/
-        Intent intent = getIntent();
-        pos = intent.getExtras().getInt("Plan");
-       //plan = PlanAdapter.(pos);
+        String newString;
+        if (savedInstanceState == null) {
+            Bundle extras = getIntent().getExtras();
+            if(extras == null) {
+                newString= null;
+            } else {
+                newString= extras.getString("Plan");
+            }
+        } else {
+            newString= (String) savedInstanceState.getSerializable("Plan");
+        }
+        tv_plan.setText(newString);
     }
 }

@@ -1,6 +1,7 @@
 package com.example.mark.activityplanner;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.MenuItemCompat;
@@ -13,6 +14,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.support.v7.widget.SearchView;
@@ -52,6 +54,14 @@ public class BrowseFragment extends Fragment implements View.OnClickListener, Se
 
         adapter = new ArrayAdapter<String>(this.getActivity(), android.R.layout.simple_list_item_1, listItems);
         listView.setAdapter(adapter);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Intent viewProfile = new Intent(BrowseFragment.this.getActivity(), ViewProfile.class);
+                viewProfile.putExtra("User", listView.getItemAtPosition(i).toString());
+                startActivity(viewProfile);
+            }
+        });
 
         // Inflate the layout for this fragment
         return view;

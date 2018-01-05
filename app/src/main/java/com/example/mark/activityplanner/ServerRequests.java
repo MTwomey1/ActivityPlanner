@@ -205,4 +205,15 @@ public class ServerRequests {
         new connection(data_to_send, "FindUsers.php", string_callback).execute();
     }
 
+    public void get_profile(String username, Get_String_Callback string_callback){
+        Map<String, String> data_to_send = new HashMap<>();
+        data_to_send.put("getprofile", username);
+
+        // show progress
+        progressDialog.show();
+
+        // send data to sever - the sever will echo back the results
+        new connection(data_to_send, "GetProfile.php", string_callback).execute();
+    }
+
 }
