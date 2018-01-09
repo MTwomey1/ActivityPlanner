@@ -15,6 +15,7 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by Mark on 01/12/2017.
@@ -214,6 +215,39 @@ public class ServerRequests {
 
         // send data to sever - the sever will echo back the results
         new connection(data_to_send, "GetProfile.php", string_callback).execute();
+    }
+
+    public void add_activities(Set<String> set, String username, Get_String_Callback string_callback){
+        Map<String, String> data_to_send = new HashMap<>();
+
+        data_to_send.put("username", username);
+
+        int i = 0;
+        for(String o : set){
+            data_to_send.put("activity"+i, o);
+            i++;
+        }
+        String s = String.valueOf(i);
+        data_to_send.put("amount", s);
+
+        // show progress
+        progressDialog.show();
+
+        // send data to sever - the sever will echo back the results
+        new connection(data_to_send, "AddActivities.php", string_callback).execute();
+    }
+
+    public void add_user(String mUsername, String username, Get_String_Callback string_callback){
+        Map<String, String> data_to_send = new HashMap<>();
+
+        data_to_send.put("mUsername", mUsername);
+        data_to_send.put("username", username);
+
+        // show progress
+        progressDialog.show();
+
+        // send data to sever - the sever will echo back the results
+        new connection(data_to_send, "AddUser.php", string_callback).execute();
     }
 
 }

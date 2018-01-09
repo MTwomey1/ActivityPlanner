@@ -1,7 +1,9 @@
 package com.example.mark.activityplanner;
 
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.MenuItemCompat;
@@ -99,6 +101,8 @@ public class BrowseFragment extends Fragment implements View.OnClickListener, Se
 
     private void find_users(String s) {
         Log.d("myTag", s);
+        SharedPreferences sharedPref = this.getActivity().getSharedPreferences("userInfo", Context.MODE_PRIVATE);
+        final String mUsername = sharedPref.getString("username", null);
         ServerRequests server_requests = new ServerRequests(this.getActivity());
         server_requests.find_users(s, new Get_String_Callback() {
             @Override
@@ -112,7 +116,9 @@ public class BrowseFragment extends Fragment implements View.OnClickListener, Se
                         String username  = jObject.get("username"+i).toString();
                         //planAdapter.add(plan);
                         Log.d("myTag", username);
-                        adapter.add(username);
+                        if(!username.equals(mUsername)) {
+                            adapter.add(username);
+                        }
                     }
                 }catch (Exception e){
                     e.printStackTrace();

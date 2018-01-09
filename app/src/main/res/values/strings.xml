@@ -33,6 +33,9 @@
     <string name="edit_profile_string">Edit Profile</string>
     <string name="location_string">Location</string>
     <string name="date_picker_string">Date Picker</string>
+    <string name="underline_username"><u>Username</u></string>
+    <string name="underline_name"><u>Name</u></string>
+    <string name="friends_string">Friends</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

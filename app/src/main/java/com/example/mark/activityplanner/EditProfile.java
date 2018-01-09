@@ -80,14 +80,6 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
         });
     }
 
-    public void showSelected(View view){
-        String items="";
-        for (String item:selectedItems){
-            items+="-"+item+"\n";
-        }
-        Toast.makeText(this, "Selected: \n"+items,Toast.LENGTH_LONG);
-    }
-
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
@@ -100,11 +92,29 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
                 editor.commit();
                 Log.d("myTag","Fookd String");
 
+                String username = sharedPref.getString("username", null);
+
+                //add_activities(set, username);
+
                 finish();
                 startActivity(getIntent());
 
                 break;
             }
         }
+    }
+
+    private void add_activities(Set<String> set, String username) {
+        ServerRequests server_requests = new ServerRequests(this);
+        server_requests.add_activities(set, username, new Get_String_Callback() {
+            @Override
+            public void done(String returned_string) {
+                try{
+                    Log.d("myTag", returned_string);
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 }

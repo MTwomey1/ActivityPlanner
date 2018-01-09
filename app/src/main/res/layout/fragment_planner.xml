@@ -20,7 +20,7 @@
 
     <ListView
         android:id="@+id/listView"
-        android:layout_width="368dp"
+        android:layout_width="339dp"
         android:layout_height="273dp"
         android:layout_marginBottom="32dp"
         android:layout_marginTop="16dp"
@@ -35,8 +35,8 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="24dp"
         android:layout_marginTop="24dp"
-        android:textAppearance="?android:textAppearanceLarge"
         android:text="@string/upcomming_plans_string"
+        android:textAppearance="?android:textAppearanceLarge"
         app:layout_constraintBottom_toTopOf="@+id/listView"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -82,7 +82,7 @@
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/listView"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.473"
+        app:layout_constraintHorizontal_bias="0.42"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

@@ -16,6 +16,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -37,6 +38,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     private ArrayList<String> mDataset;
     private ImageButton btn_logout;
     private ImageButton btn_manage;
+    private Button btn_friends;
 
 
     public ProfileFragment() {
@@ -53,6 +55,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         btn_logout = view.findViewById(R.id.imageButton_ID);
         btn_manage = view.findViewById(R.id.manage_btn_id);
         tv_activities = view.findViewById(R.id.tv_activities_id);
+        btn_friends = view.findViewById(R.id.btn_friends_id);
 
         SharedPreferences sharedPref = this.getActivity().getSharedPreferences("userInfo", Context.MODE_PRIVATE);
         String firstname = sharedPref.getString("firstname","");
@@ -89,6 +92,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
 
         btn_logout.setOnClickListener(this);
         btn_manage.setOnClickListener(this);
+        btn_friends.setOnClickListener(this);
 
         // Inflate the layout for this fragment
         return view;
@@ -128,6 +132,12 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                 case R.id.manage_btn_id: {
                     Intent manageIntent = new Intent(getActivity(), EditProfile.class);
                     startActivity(manageIntent);
+
+                    break;
+                }
+                case R.id.btn_friends_id: {
+                    Intent friendsIntent = new Intent(getActivity(), ViewFriends.class);
+                    startActivity(friendsIntent);
 
                     break;
                 }
