@@ -250,4 +250,41 @@ public class ServerRequests {
         new connection(data_to_send, "AddUser.php", string_callback).execute();
     }
 
+    public void get_requests(String mUsername, Get_String_Callback string_callback){
+        Map<String, String> data_to_send = new HashMap<>();
+
+        data_to_send.put("mUsername", mUsername);
+
+        // show progress
+        progressDialog.show();
+
+        // send data to sever - the sever will echo back the results
+        new connection(data_to_send, "GetRequests.php", string_callback).execute();
+    }
+
+    public void add_friend(String username, String mUsername, Get_String_Callback string_callback){
+        Map<String, String> data_to_send = new HashMap<>();
+
+        data_to_send.put("username", username);
+        data_to_send.put("mUsername", mUsername);
+
+        // show progress
+        progressDialog.show();
+
+        // send data to sever - the sever will echo back the results
+        new connection(data_to_send, "AddFriend.php", string_callback).execute();
+    }
+
+    public void get_friends(String mUsername, Get_String_Callback string_callback){
+        Map<String, String> data_to_send = new HashMap<>();
+
+        data_to_send.put("mUsername", mUsername);
+
+        // show progress
+        progressDialog.show();
+
+        // send data to sever - the sever will echo back the results
+        new connection(data_to_send, "GetFriends.php", string_callback).execute();
+    }
+
 }

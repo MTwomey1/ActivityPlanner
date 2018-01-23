@@ -48,4 +48,6 @@
     <string name="location">Location</string>
     <string name="date">Date</string>
     <string name="activity">Activity</string>
+    <string name="friend_requests">Friend Requests</string>
+    <string name="my_friends">My Friends</string>
 </resources>
