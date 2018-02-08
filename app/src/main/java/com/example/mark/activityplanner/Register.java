@@ -1,12 +1,27 @@
 package com.example.mark.activityplanner;
 
 import android.content.Intent;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
+
+import com.example.mark.activityplanner.network.RetrofitRequest;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
+import java.io.IOException;
+
+import retrofit2.Response;
+import retrofit2.adapter.rxjava.HttpException;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
 
 import static android.text.TextUtils.isEmpty;
 
@@ -14,6 +29,9 @@ public class Register extends AppCompatActivity implements View.OnClickListener 
 
     EditText et_username, et_password, et_confirm_password, et_email, et_firstname, et_lastname;
     Button btn_register;
+    private CompositeSubscription mSubscriptions;
+    private ProgressBar mProgressbar;
+    User user2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,8 +46,10 @@ public class Register extends AppCompatActivity implements View.OnClickListener 
         et_lastname = findViewById(R.id.et_last_name_id);
 
         btn_register = findViewById(R.id.btn_reg_user_id);
+        mProgressbar = findViewById(R.id.progressBar);
 
         btn_register.setOnClickListener(this);
+        mSubscriptions = new CompositeSubscription();
     }
 
     @Override
@@ -81,6 +101,7 @@ public class Register extends AppCompatActivity implements View.OnClickListener 
 
                     if (password.equals(confirm_pass)) {
                         User user = new User(username, password, email, firstname, lastname);
+                        user2 = new User(username, firstname, lastname);
                         register_user(user);
 
                     } else {
@@ -104,11 +125,57 @@ public class Register extends AppCompatActivity implements View.OnClickListener 
                     et_username.setError("Username Already in Use");
                 }
                 else {
-                    startActivity(new Intent(Register.this, Login.class));
-                    finish();
+                    registerProcess(user2);
+                    //startActivity(new Intent(Register.this, Login.class));
+                    //finish();
                 }
             }
         });
+    }
+
+    private void registerProcess(User user2) {
+        mSubscriptions.add(RetrofitRequest.getRetrofit().postUsername(user2)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe(this::handleResponse,this::handleError));
+    }
+
+    private void handleResponse(Response response) {
+
+        Log.e("Error", response.message());
+
+        mProgressbar.setVisibility(View.GONE);
+        //showSnackBarMessage(response.getMessage());
+
+        startActivity(new Intent(Register.this, Login.class));
+        finish();
+    }
+
+    private void handleError(Throwable error) {
+
+        mProgressbar.setVisibility(View.GONE);
+
+        if (error instanceof HttpException) {
+
+            Gson gson = new GsonBuilder().create();
+
+            try {
+
+                String errorBody = ((HttpException) error).response().errorBody().string();
+                Response response = gson.fromJson(errorBody,Response.class);
+                showSnackBarMessage("What " + errorBody);
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+
+            showSnackBarMessage("Network Error !");
+        }
+    }
+
+    private void showSnackBarMessage(String message) {
+        Snackbar.make(findViewById(R.id.actvity_register), message, Snackbar.LENGTH_SHORT).show();
     }
 
     // check if editText is empty

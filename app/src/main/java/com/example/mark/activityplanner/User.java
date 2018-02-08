@@ -26,4 +26,12 @@ public class User {
         this.lastname = "";
 
     }
+
+    public User(String username, String firstname, String lastname) {
+
+        this.username = username;
+        this.firstname = firstname;
+        this.lastname = lastname;
+
+    }
 }
