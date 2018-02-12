@@ -171,6 +171,7 @@ public class Register extends AppCompatActivity implements View.OnClickListener 
         } else {
 
             showSnackBarMessage("Network Error !");
+            Log.d("MyTag", error.toString());
         }
     }
 

@@ -287,4 +287,17 @@ public class ServerRequests {
         new connection(data_to_send, "GetFriends.php", string_callback).execute();
     }
 
+    public void removeFriendRequest(String mUsername, String removeFriendRequest, Get_String_Callback string_callback){
+        Map<String, String> data_to_send = new HashMap<>();
+
+        data_to_send.put("mUsername", mUsername);
+        data_to_send.put("Username2", removeFriendRequest);
+
+        // show progress
+        //progressDialog.show();
+
+        // send data to sever - the sever will echo back the results
+        new connection(data_to_send, "RemoveRequest.php", string_callback).execute();
+    }
+
 }
