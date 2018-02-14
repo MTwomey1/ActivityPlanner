@@ -48,10 +48,11 @@ public class ViewFriends extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_friends);
 
+        mSubscriptions = new CompositeSubscription();
         SharedPreferences sharedPref = this.getSharedPreferences("userInfo", Context.MODE_PRIVATE);
         mUsername = sharedPref.getString("username", null);
         get_requests(mUsername);
-        //get_friends(mUsername);
+        get_friends(mUsername);
 
         listView = findViewById(R.id.requests_list_id);
         adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, listItems);
@@ -68,7 +69,6 @@ public class ViewFriends extends AppCompatActivity {
         adapter2 = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, listItems2);
         listView2.setAdapter(adapter2);
 
-        mSubscriptions = new CompositeSubscription();
         mProgressbar = findViewById(R.id.progressBar);
     }
 
@@ -82,7 +82,7 @@ public class ViewFriends extends AppCompatActivity {
     }
 
     private void handleGetResponse(Response<ResponseBody> responseBodyResponse) {
-        Log.d("MyTag", responseBodyResponse.toString());
+        Log.d("MyTag", responseBodyResponse.body().toString());
     }
 
     /*

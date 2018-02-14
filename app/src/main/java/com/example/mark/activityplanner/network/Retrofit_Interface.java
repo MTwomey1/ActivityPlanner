@@ -26,6 +26,6 @@ public interface Retrofit_Interface {
     Observable<Response<ResponseBody>> addFriend(@Body Friend friend);
 
     // Get Friends
-    @GET("myFriends")
+    @POST("myFriends")
     Observable<Response<ResponseBody>> getFriends(@Body User user);
 }
