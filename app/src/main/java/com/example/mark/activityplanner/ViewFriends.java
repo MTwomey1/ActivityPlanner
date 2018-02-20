@@ -18,13 +18,16 @@ import android.widget.Toast;
 
 import com.example.mark.activityplanner.network.RetrofitRequest;
 import com.example.mark.activityplanner.utils.Friend;
+import com.example.mark.activityplanner.utils.Friends;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import okhttp3.ResponseBody;
 import retrofit2.Response;
@@ -81,8 +84,14 @@ public class ViewFriends extends AppCompatActivity {
                     .subscribe(this::handleGetResponse,this::handleError));
     }
 
-    private void handleGetResponse(Response<ResponseBody> responseBodyResponse) {
-        Log.d("MyTag", responseBodyResponse.body().toString());
+    private void handleGetResponse(Friends friends) {
+
+        List<String> friendslist = friends.getFriends();
+
+        for (int i = 0; i < friendslist.size(); i++) {
+            String name1 = friendslist.get(i);
+            adapter2.add(name1);
+        }
     }
 
     /*
