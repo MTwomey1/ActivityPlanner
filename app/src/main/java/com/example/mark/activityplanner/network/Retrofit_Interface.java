@@ -5,8 +5,11 @@ package com.example.mark.activityplanner.network;
  */
 
 import com.example.mark.activityplanner.User;
+import com.example.mark.activityplanner.utils.Activity;
 import com.example.mark.activityplanner.utils.Friend;
 import com.example.mark.activityplanner.utils.Friends;
+
+import java.util.Set;
 
 import okhttp3.ResponseBody;
 import retrofit2.Response;
@@ -30,5 +33,8 @@ public interface Retrofit_Interface {
     @POST("myFriends")
     Observable<Friends> getFriends(@Body User user);
 
-    //Observable<Response<ResponseBody>> getFriends(@Body User user);
+    // Add Activities
+    @POST("addActivities")
+    Observable<Response<ResponseBody>> addActivities(@Body Activity activity);
+
 }

@@ -232,6 +232,6 @@ public class ViewFriends extends AppCompatActivity {
     }
 
     private void showSnackBarMessage(String message) {
-        Snackbar.make(findViewById(R.id.actvity_register), message, Snackbar.LENGTH_SHORT).show();
+        Snackbar.make(findViewById(R.id.activity_view_friends), message, Snackbar.LENGTH_SHORT).show();
     }
 }
