@@ -20,7 +20,8 @@
     <string name="title_activity_user_home">UserHome</string>
     <string name="title_profile">Profile</string>
     <string name="title_planner">Planner</string>
-    <string name="title_browse">Browse</string>
+    <string name="title_browse">Discover</string>
+    <string name="empty_list">Enter Username Above to Search</string>
     <string name="upcomming_plans_string">Upcomming Plans</string>
     <string name="find_string">Find</string>
     <string name="create_string">Create</string>
@@ -50,4 +51,5 @@
     <string name="activity">Activity</string>
     <string name="friend_requests">Friend Requests</string>
     <string name="my_friends">My Friends</string>
+    <string name="suggestions">Suggestions</string>
 </resources>

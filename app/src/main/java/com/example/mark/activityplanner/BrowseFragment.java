@@ -21,6 +21,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.widget.TextView;
 
 
 import org.json.JSONObject;
@@ -36,6 +37,7 @@ public class BrowseFragment extends Fragment implements View.OnClickListener, Se
     Toolbar mtoolbar;
     ArrayList<String> listItems = new ArrayList<String>();
     ArrayAdapter<String> adapter;
+    TextView emptyText;
 
 
     public BrowseFragment() {
@@ -53,6 +55,7 @@ public class BrowseFragment extends Fragment implements View.OnClickListener, Se
         mtoolbar.setTitle("Username Search");
 
         listView = view.findViewById(R.id.user_list_id);
+        emptyText = view.findViewById(R.id.tv_empty_id);
 
         adapter = new ArrayAdapter<String>(this.getActivity(), android.R.layout.simple_list_item_1, listItems);
         listView.setAdapter(adapter);
@@ -93,6 +96,9 @@ public class BrowseFragment extends Fragment implements View.OnClickListener, Se
 
     @Override
     public boolean onQueryTextChange(String s) {
+        if(adapter == null){
+            emptyText.setText("Enter Username Above to Search");
+        }
         if(s.length() > 2) {
             find_users(s);
         }
@@ -118,6 +124,8 @@ public class BrowseFragment extends Fragment implements View.OnClickListener, Se
                         Log.d("myTag", username);
                         if(!username.equals(mUsername)) {
                             adapter.add(username);
+                            emptyText.setText("");
+
                         }
                     }
                 }catch (Exception e){

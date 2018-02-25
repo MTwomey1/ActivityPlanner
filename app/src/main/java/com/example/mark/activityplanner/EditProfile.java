@@ -132,6 +132,7 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
     }
 
     private void handleResponse(Response<ResponseBody> responseBodyResponse) {
+        Log.e("Response", responseBodyResponse.message());
     }
 
     private void handleError(Throwable error) {
