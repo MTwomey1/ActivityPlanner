@@ -70,14 +70,7 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
                 }
             });
 
-            //selectedItems.addAll(sample);
-            for(String o : sample){
-                selectedItems.add(o);
-                tv.append(o + ", ");
-                Log.d("myTag", o);
-            }
-
-            //selectedItems = new ArrayList<String>(sample);
+            tv.setText(sample.toString().replace("[", "").replace("]",""));
         }
 
         ListView listView = findViewById(R.id.checkable_list);

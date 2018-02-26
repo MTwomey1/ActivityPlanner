@@ -73,9 +73,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                 }
             });
 
-            for (String o : sample) {
-                tv_activities.append(o + ", ");
-            }
+            tv_activities.setText(sample.toString().replace("[", "").replace("]",""));
+
         }
 
         mDataset = new ArrayList<>();
