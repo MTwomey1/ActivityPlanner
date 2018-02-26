@@ -90,6 +90,14 @@ public class BrowseFragment extends Fragment implements View.OnClickListener, Se
         adapter2 = new ArrayAdapter<String>(this.getActivity(), android.R.layout.simple_list_item_1, listItems2);
         listView2.setAdapter(adapter2);
         get_suggestions(username);
+        listView2.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Intent viewProfile = new Intent(BrowseFragment.this.getActivity(), ViewProfile.class);
+                viewProfile.putExtra("User", listView2.getItemAtPosition(i).toString());
+                startActivity(viewProfile);
+            }
+        });
 
         // Inflate the layout for this fragment
         return view;
