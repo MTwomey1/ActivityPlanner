@@ -11,7 +11,8 @@
         style="@style/Widget.AppCompat.Button.Colored"
         android:layout_width="155dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="173dp"
+        android:layout_marginBottom="248dp"
+        android:background="@drawable/roundedbutton"
         android:text="@string/register_string"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -27,6 +28,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="68dp"
         android:layout_marginTop="8dp"
+        android:background="@drawable/roundedbutton"
         android:text="Login"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -35,7 +37,7 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btn_register_id"
-        app:layout_constraintVertical_bias="0.72" />
+        app:layout_constraintVertical_bias="0.588" />
 
     <TextView
         android:id="@+id/tv_welcome_id"
@@ -59,6 +61,6 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_welcome_id"
-        app:layout_constraintVertical_bias="0.371"
+        app:layout_constraintVertical_bias="0.346"
         app:srcCompat="@drawable/web_hi_res_512" />
 </android.support.constraint.ConstraintLayout>
