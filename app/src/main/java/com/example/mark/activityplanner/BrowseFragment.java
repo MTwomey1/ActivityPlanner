@@ -22,22 +22,37 @@ import android.widget.ListView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.widget.TextView;
+import android.widget.Toast;
 
+
+import com.example.mark.activityplanner.network.RetrofitRequest;
+import com.example.mark.activityplanner.utils.Friend;
+import com.example.mark.activityplanner.utils.Friends;
 
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.List;
+
+import okhttp3.ResponseBody;
+import retrofit2.Response;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class BrowseFragment extends Fragment implements View.OnClickListener, SearchView.OnQueryTextListener {
 
-    ListView listView;
+    ListView listView, listView2;
     Toolbar mtoolbar;
     ArrayList<String> listItems = new ArrayList<String>();
-    ArrayAdapter<String> adapter;
+    ArrayList<String> listItems2 = new ArrayList<String>();
+    ArrayAdapter<String> adapter, adapter2;
     TextView emptyText;
+    String username;
+    private CompositeSubscription mSubscriptions;
 
 
     public BrowseFragment() {
@@ -49,12 +64,16 @@ public class BrowseFragment extends Fragment implements View.OnClickListener, Se
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_browse, container, false);
 
+        mSubscriptions = new CompositeSubscription();
         mtoolbar = view.findViewById(R.id.toolbar);
         ((AppCompatActivity) getActivity()).setSupportActionBar(mtoolbar);
         setHasOptionsMenu(true);
         mtoolbar.setTitle("Username Search");
+        SharedPreferences sharedPref = this.getActivity().getSharedPreferences("userInfo", Context.MODE_PRIVATE);
+        username = sharedPref.getString("username", null);
 
         listView = view.findViewById(R.id.user_list_id);
+        listView2 = view.findViewById(R.id.suggestions_list_id);
         emptyText = view.findViewById(R.id.tv_empty_id);
 
         adapter = new ArrayAdapter<String>(this.getActivity(), android.R.layout.simple_list_item_1, listItems);
@@ -68,8 +87,33 @@ public class BrowseFragment extends Fragment implements View.OnClickListener, Se
             }
         });
 
+        adapter2 = new ArrayAdapter<String>(this.getActivity(), android.R.layout.simple_list_item_1, listItems2);
+        listView2.setAdapter(adapter2);
+        get_suggestions(username);
+
         // Inflate the layout for this fragment
         return view;
+    }
+
+    private void get_suggestions(String username) {
+        User user = new User(username);
+
+        mSubscriptions.add(RetrofitRequest.getRetrofit().getSuggestions(user)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe(this::handleResponse,this::handleError));
+    }
+
+    private void handleResponse(Friends friends) {
+        List<String> friendslist = friends.getFriends();
+
+        for (int i = 0; i < friendslist.size(); i++) {
+            String name1 = friendslist.get(i);
+            adapter2.add(name1);
+        }
+    }
+
+    private void handleError(Throwable throwable) {
     }
 
     @Override

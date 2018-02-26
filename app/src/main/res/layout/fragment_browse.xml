@@ -32,7 +32,7 @@
         app:layout_constraintTop_toBottomOf="@+id/toolbar" />
 
     <ListView
-        android:id="@+id/listView2"
+        android:id="@+id/suggestions_list_id"
         android:layout_width="368dp"
         android:layout_height="211dp"
         android:layout_marginEnd="8dp"
