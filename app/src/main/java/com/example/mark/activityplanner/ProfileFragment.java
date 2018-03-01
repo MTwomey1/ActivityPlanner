@@ -97,6 +97,18 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         return view;
     }
 
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 10001) {
+
+            Log.d("myTag", "100011");
+            getActivity().finish();
+            startActivity(getActivity().getIntent());
+        }
+    }
+
         public void onClick(View view) {
             switch (view.getId()) {
                 case R.id.imageButton_ID: {
@@ -130,7 +142,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                 }
                 case R.id.manage_btn_id: {
                     Intent manageIntent = new Intent(getActivity(), EditProfile.class);
-                    startActivity(manageIntent);
+                    startActivityForResult(manageIntent, 10001);
 
                     break;
                 }

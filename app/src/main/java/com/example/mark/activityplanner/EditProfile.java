@@ -108,10 +108,10 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
                             if (o.equals(p)){
                                 selectedItems.remove(o);
                                 set.remove(p);
+                                break;
                             }
                         }
                     }
-
                     set.addAll(selectedItems);
                 }
                 else{
@@ -126,6 +126,7 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
                 Activity activity = new Activity(username, set);
                 add_activities(activity);
 
+                setResult(10001);
                 finish();
                 startActivity(getIntent());
 
