@@ -98,8 +98,25 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
             case R.id.btn_update_id: {
                 SharedPreferences sharedPref = getSharedPreferences("userInfo", Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPref.edit();
+
                 Set<String> set = new HashSet<String>();
-                set.addAll(selectedItems);
+                if(sharedPref.contains("Activities")) {
+                    set = sharedPref.getStringSet("Activities", null);
+
+                    for(String o : selectedItems){
+                        for(String p : set) {
+                            if (o.equals(p)){
+                                selectedItems.remove(o);
+                                set.remove(p);
+                            }
+                        }
+                    }
+
+                    set.addAll(selectedItems);
+                }
+                else{
+                    set.addAll(selectedItems);
+                }
                 editor.putStringSet("Activities", set);
                 editor.commit();
                 Log.d("myTag","Fookd String");
