@@ -2,6 +2,7 @@ package com.example.mark.activityplanner;
 
 import android.app.DatePickerDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
@@ -16,6 +17,9 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.example.mark.activityplanner.utils.Activity;
+import com.example.mark.activityplanner.utils.Globals;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -25,6 +29,8 @@ import java.util.List;
 import java.util.Set;
 
 public class CreatePlans extends AppCompatActivity implements View.OnClickListener {
+
+    Globals g = Globals.getInstance();
 
     Spinner activity_spinner;
     ArrayAdapter<String> adapter;
@@ -122,7 +128,10 @@ public class CreatePlans extends AppCompatActivity implements View.OnClickListen
         server_requests.create_plan(username, activity, date, location, new Get_String_Callback() {
             @Override
             public void done(String returned_string) {
+                g.setTest(1);
+                setResult(10001);
                 finish();
+
             }
         });
     }

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,9 +15,13 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Toast;
+
+import com.google.gson.Gson;
 
 import org.json.JSONObject;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,8 +59,11 @@ public class PlannerFragment extends Fragment implements View.OnClickListener {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Intent planIntent = new Intent(PlannerFragment.this.getActivity(), ViewPlan.class);
-                planIntent.putExtra("Plan", lv.getItemAtPosition(i).toString());
-                Log.d("myTag", lv.getItemAtPosition(i).toString());
+                //planIntent.putExtra("Plan", planAdapter.getItem(i));
+                Plan myPlan = (Plan) planAdapter.getItem(i);
+                String planGSON = new Gson().toJson(myPlan);
+                planIntent.putExtra("Plan", planGSON);
+                Log.d("myTag", myPlan.getLocation());
                 startActivity(planIntent);
             }
         });
@@ -65,6 +73,17 @@ public class PlannerFragment extends Fragment implements View.OnClickListener {
 
         // Inflate the layout for this fragment
         return view;
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == 10001) {
+
+            Log.d("myTag", "100011");
+            getActivity().finish();
+            startActivity(getActivity().getIntent());
+        }
     }
 
     private void retrieve_plans(String username) {
@@ -77,9 +96,9 @@ public class PlannerFragment extends Fragment implements View.OnClickListener {
                     JSONObject jObject = new JSONObject(returned_string);
 
                     for (int i = 0; i < jObject.length(); i++){
-                        String username  = jObject.get("username"+i).toString() + " ";
-                        String activity  = jObject.get("activity"+i).toString() + " ";
-                        String date  = jObject.get("date"+i).toString() + " ";
+                        String username  = jObject.get("username"+i).toString();
+                        String activity  = jObject.get("activity"+i).toString();
+                        String date  = jObject.get("date"+i).toString();
                         String location = jObject.get("location"+i).toString();
                         Plan plan = new Plan(username, activity, date, location);
                         planAdapter.add(plan);
@@ -97,11 +116,13 @@ public class PlannerFragment extends Fragment implements View.OnClickListener {
 
             case R.id.btn_create_id:{
                 Intent createIntent = new Intent(getActivity(), CreatePlans.class);
-                startActivity(createIntent);
+                startActivityForResult(createIntent, 1001);
 
                 break;
             }
 
         }
     }
+
+
 }
