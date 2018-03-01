@@ -24,8 +24,11 @@ import com.google.gson.GsonBuilder;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -100,25 +103,29 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
                 SharedPreferences.Editor editor = sharedPref.edit();
 
                 Set<String> set = new HashSet<String>();
+                Collection<String> removeCandidates = new ArrayList<>();
+                Collection<String> removeCandidates2 = new ArrayList<>();
                 if(sharedPref.contains("Activities")) {
                     set = sharedPref.getStringSet("Activities", null);
 
                     for(String o : selectedItems){
                         for(String p : set) {
                             if (o.equals(p)){
-                                selectedItems.remove(o);
-                                set.remove(p);
+                                removeCandidates.add(o);
+                                removeCandidates2.add(p);
                                 break;
                             }
                         }
                     }
+                    selectedItems.removeAll(removeCandidates);
+                    set.removeAll(removeCandidates2);
                     set.addAll(selectedItems);
                 }
                 else{
                     set.addAll(selectedItems);
                 }
                 editor.putStringSet("Activities", set);
-                editor.commit();
+                editor.apply();
                 Log.d("myTag","Fookd String");
 
                 String username = sharedPref.getString("username", null);

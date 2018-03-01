@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -18,12 +19,26 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.example.mark.activityplanner.network.RetrofitRequest;
+import com.example.mark.activityplanner.utils.Friends;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import retrofit2.Response;
+import retrofit2.adapter.rxjava.HttpException;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
 
 
 /**
@@ -39,6 +54,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     private ImageButton btn_logout;
     private ImageButton btn_manage;
     private Button btn_friends;
+    private CompositeSubscription mSubscriptions;
+    private ProgressBar mProgressbar;
 
 
     public ProfileFragment() {
@@ -51,6 +68,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
 
+        mSubscriptions = new CompositeSubscription();
+
         tv_fullname = view.findViewById(R.id.tv_fullname_id);
         btn_logout = view.findViewById(R.id.imageButton_ID);
         btn_manage = view.findViewById(R.id.manage_btn_id);
@@ -60,7 +79,10 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         SharedPreferences sharedPref = this.getActivity().getSharedPreferences("userInfo", Context.MODE_PRIVATE);
         String firstname = sharedPref.getString("firstname","");
         String lastname = sharedPref.getString("lastname","");
+        String username = sharedPref.getString("username","");
         tv_fullname.setText(firstname + " " + lastname);
+
+        getActivities(username);
 
         if(sharedPref.contains("Activities")) {
             Set<String> set = sharedPref.getStringSet("Activities", null);
@@ -73,7 +95,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                 }
             });
 
-            tv_activities.setText(sample.toString().replace("[", "").replace("]",""));
+            //tv_activities.setText(sample.toString().replace("[", "").replace("]",""));
 
         }
 
@@ -95,6 +117,69 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
 
         // Inflate the layout for this fragment
         return view;
+    }
+
+    private void getActivities(String username) {
+        User user = new User(username);
+
+        mSubscriptions.add(RetrofitRequest.getRetrofit().getActivities(user)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe(this::handleResponse,this::handleError));
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    private void handleResponse(Friends friends) {
+
+        List<String> friendslist = friends.getFriends();
+        Set<String> set = new HashSet<String>();
+
+        for (int i = 0; i < friendslist.size(); i++) {
+            String name1 = friendslist.get(i);
+            //tv_activities.append(name1);
+            //tv_activities.append(", ");
+            set.add(name1);
+        }
+
+        List<String> sample = new ArrayList<String>(set);
+        sample.sort(new Comparator<String>() {
+            @Override
+            public int compare(String lhs, String rhs) {
+                return lhs.compareTo(rhs);
+            }
+        });
+        tv_activities.setText(sample.toString().replace("[", "").replace("]",""));
+
+        //String tv_act = tv_activities.getText().toString();
+        //tv_act = tv_act.substring(0, tv_act.length() - 2);
+        //tv_activities.setText(tv_act);
+
+        SharedPreferences sharedPref = this.getActivity().getSharedPreferences("userInfo", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putStringSet("Activities", set);
+        editor.apply();
+    }
+
+    private void handleError(Throwable error) {
+
+        mProgressbar.setVisibility(View.GONE);
+
+        if (error instanceof HttpException) {
+
+            Gson gson = new GsonBuilder().create();
+
+            try {
+
+                String errorBody = ((HttpException) error).response().errorBody().string();
+                Response response = gson.fromJson(errorBody,Response.class);
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+
+            Log.d("MyTag", error.toString());
+        }
     }
 
 

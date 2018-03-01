@@ -41,4 +41,8 @@ public interface Retrofit_Interface {
     @POST("getSuggestions")
     Observable<Friends> getSuggestions(@Body User user);
 
+    // Get Suggestions
+    @POST("getActivities")
+    Observable<Friends> getActivities(@Body User user);
+
 }
