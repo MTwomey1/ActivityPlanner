@@ -53,7 +53,13 @@ public class PlannerFragment extends Fragment implements View.OnClickListener {
         planAdapter = new PlanAdapter(this.getActivity(), R.layout.row_layout);
 
         lv.setAdapter(planAdapter);
-        retrieve_plans(username);
+
+        if (AppStatus.getInstance(this.getActivity()).isOnline()) {
+            retrieve_plans(username);
+        }
+        else {
+            Toast.makeText(this.getActivity().getApplicationContext(),"You are offline", Toast.LENGTH_LONG).show();
+        }
 
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -115,8 +121,13 @@ public class PlannerFragment extends Fragment implements View.OnClickListener {
         switch(view.getId()){
 
             case R.id.btn_create_id:{
-                Intent createIntent = new Intent(getActivity(), CreatePlans.class);
-                startActivityForResult(createIntent, 1001);
+                if (AppStatus.getInstance(this.getActivity()).isOnline()) {
+                    Intent createIntent = new Intent(getActivity(), CreatePlans.class);
+                    startActivityForResult(createIntent, 1001);
+                }
+                else {
+                    Toast.makeText(this.getActivity().getApplicationContext(),"You are offline", Toast.LENGTH_LONG).show();
+                }
 
                 break;
             }

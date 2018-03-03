@@ -21,6 +21,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.mark.activityplanner.network.RetrofitRequest;
 import com.example.mark.activityplanner.utils.Friends;
@@ -82,7 +83,12 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         String username = sharedPref.getString("username","");
         tv_fullname.setText(firstname + " " + lastname);
 
-        getActivities(username);
+        if (AppStatus.getInstance(this.getActivity()).isOnline()) {
+            getActivities(username);
+        }
+        else {
+            Toast.makeText(this.getActivity().getApplicationContext(),"You are offline", Toast.LENGTH_LONG).show();
+        }
 
         if(sharedPref.contains("Activities")) {
             Set<String> set = sharedPref.getStringSet("Activities", null);
@@ -226,14 +232,24 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                     break;
                 }
                 case R.id.manage_btn_id: {
-                    Intent manageIntent = new Intent(getActivity(), EditProfile.class);
-                    startActivityForResult(manageIntent, 10001);
+                    if (AppStatus.getInstance(this.getActivity()).isOnline()) {
+                        Intent manageIntent = new Intent(getActivity(), EditProfile.class);
+                        startActivityForResult(manageIntent, 10001);
+                    }
+                    else {
+                        Toast.makeText(this.getActivity().getApplicationContext(),"You are offline", Toast.LENGTH_LONG).show();
+                    }
 
                     break;
                 }
                 case R.id.btn_friends_id: {
-                    Intent friendsIntent = new Intent(getActivity(), ViewFriends.class);
-                    startActivity(friendsIntent);
+                    if (AppStatus.getInstance(this.getActivity()).isOnline()) {
+                        Intent friendsIntent = new Intent(getActivity(), ViewFriends.class);
+                        startActivity(friendsIntent);
+                    }
+                    else {
+                        Toast.makeText(this.getActivity().getApplicationContext(),"You are offline", Toast.LENGTH_LONG).show();
+                    }
 
                     break;
                 }

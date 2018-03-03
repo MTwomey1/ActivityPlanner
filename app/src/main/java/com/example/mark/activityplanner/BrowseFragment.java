@@ -89,7 +89,14 @@ public class BrowseFragment extends Fragment implements View.OnClickListener, Se
 
         adapter2 = new ArrayAdapter<String>(this.getActivity(), android.R.layout.simple_list_item_1, listItems2);
         listView2.setAdapter(adapter2);
-        get_suggestions(username);
+
+        if (AppStatus.getInstance(this.getActivity()).isOnline()) {
+            get_suggestions(username);
+        }
+        else {
+            Toast.makeText(this.getActivity().getApplicationContext(),"You are offline", Toast.LENGTH_LONG).show();
+        }
+
         listView2.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -152,7 +159,12 @@ public class BrowseFragment extends Fragment implements View.OnClickListener, Se
             emptyText.setText("Enter Username Above to Search");
         }
         if(s.length() > 2) {
-            find_users(s);
+            if (AppStatus.getInstance(this.getActivity()).isOnline()) {
+                find_users(s);
+            }
+            else {
+                Toast.makeText(this.getActivity().getApplicationContext(),"You are offline", Toast.LENGTH_LONG).show();
+            }
         }
         return false;
     }
