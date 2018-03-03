@@ -4,6 +4,9 @@ import android.content.Intent;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -25,13 +28,14 @@ import rx.subscriptions.CompositeSubscription;
 
 import static android.text.TextUtils.isEmpty;
 
-public class Register extends AppCompatActivity implements View.OnClickListener {
+public class Register extends AppCompatActivity implements View.OnClickListener, TextWatcher {
 
     EditText et_username, et_password, et_confirm_password, et_email, et_firstname, et_lastname;
     Button btn_register;
     private CompositeSubscription mSubscriptions;
     private ProgressBar mProgressbar;
     User user2;
+    private boolean valid_email = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,10 +87,14 @@ public class Register extends AppCompatActivity implements View.OnClickListener 
                         return;
                     }
 
-                    /*if(isEmpty(email) == false){
+                    if(isEmpty(email) == false){
                         et_email.setError("Enter email");
                         return;
-                    }*/
+                    }
+
+                    if (!valid_email) {
+                        et_email.setError("Enter valid email address");
+                    }
 
                     if(isEmpty(firstname) == false){
                         et_firstname.setError("Enter firstname");
@@ -100,9 +108,12 @@ public class Register extends AppCompatActivity implements View.OnClickListener 
 
 
                     if (password.equals(confirm_pass)) {
-                        User user = new User(username, password, email, firstname, lastname);
-                        user2 = new User(username, firstname, lastname);
-                        register_user(user);
+
+                        if(valid_email) {
+                            User user = new User(username, password, email, firstname, lastname);
+                            user2 = new User(username, firstname, lastname);
+                            register_user(user);
+                        }
 
                     } else {
                         Toast.makeText(getApplicationContext(), "Password does not match", Toast.LENGTH_SHORT).show();
@@ -115,16 +126,27 @@ public class Register extends AppCompatActivity implements View.OnClickListener 
         }
     }
 
+    public final static boolean isValidEmail(CharSequence target) {
+        if (TextUtils.isEmpty(target)) {
+            return false;
+        } else {
+            return android.util.Patterns.EMAIL_ADDRESS.matcher(target).matches();
+        }
+    }
+
+
+
     private void register_user(User user) {
         ServerRequests server_requests = new ServerRequests(this);
         server_requests.store_user_data_in_background(user, new Get_String_Callback() {
             @Override
             public void done(String returned_string) {
 
-                if (returned_string.trim().equals("Username taken")) {
+                if (returned_string.trim().equals("username")) {
                     et_username.setError("Username Already in Use");
-                }
-                else {
+                } else if(returned_string.trim().equals("email")) {
+                    et_email.setError("Email Address Already in Use");
+                }else {
                     registerProcess(user2);
                     //startActivity(new Intent(Register.this, Login.class));
                     //finish();
@@ -177,6 +199,39 @@ public class Register extends AppCompatActivity implements View.OnClickListener 
 
     private void showSnackBarMessage(String message) {
         Snackbar.make(findViewById(R.id.actvity_register), message, Snackbar.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        // ignore
+        // validate email on the fly
+        if (!isValidEmail(s)) {
+            valid_email = false;
+        } else {
+            valid_email = true;
+        }
+    }
+
+    @Override
+    public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+        // validate email on the fly
+        if (!isValidEmail(s)) {
+            valid_email = false;
+        } else {
+            valid_email = true;
+        }
+
+        String result = s.toString().replaceAll(" ", "");
+        if (!s.toString().equals(result)) {
+            et_email.setText(result);
+            et_email.setSelection(result.length());
+        }
+    }
+
+    @Override
+    public void afterTextChanged(Editable s) {
+
     }
 
     // check if editText is empty
