@@ -28,7 +28,9 @@
         <activity android:name=".EditProfile" />
         <activity android:name=".ViewPlan" />
         <activity android:name=".ViewProfile" />
-        <activity android:name=".ViewFriends"></activity>
+        <activity android:name=".ViewFriends" />
+        <activity android:name=".AddFriendsToPlan" />
+        <activity android:name=".FindPlans"></activity>
     </application>
 
 </manifest>

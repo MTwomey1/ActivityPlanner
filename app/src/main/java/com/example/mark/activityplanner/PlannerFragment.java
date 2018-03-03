@@ -33,7 +33,7 @@ public class PlannerFragment extends Fragment implements View.OnClickListener {
 
     private ListView lv;
     PlanAdapter planAdapter;
-    Button btn_create_plans;
+    Button btn_create_plans, btn_find_plans;
     String username;
     List<String> mArrayList = new ArrayList<>();
 
@@ -75,7 +75,9 @@ public class PlannerFragment extends Fragment implements View.OnClickListener {
         });
 
         btn_create_plans = view.findViewById(R.id.btn_create_id);
+        btn_find_plans = view.findViewById(R.id.btn_find_id);
         btn_create_plans.setOnClickListener(this);
+        btn_find_plans.setOnClickListener(this);
 
         // Inflate the layout for this fragment
         return view;
@@ -102,11 +104,12 @@ public class PlannerFragment extends Fragment implements View.OnClickListener {
                     JSONObject jObject = new JSONObject(returned_string);
 
                     for (int i = 0; i < jObject.length(); i++){
+                        String plan_id  = jObject.get("plan_id"+i).toString();
                         String username  = jObject.get("username"+i).toString();
                         String activity  = jObject.get("activity"+i).toString();
                         String date  = jObject.get("date"+i).toString();
                         String location = jObject.get("location"+i).toString();
-                        Plan plan = new Plan(username, activity, date, location);
+                        Plan plan = new Plan(plan_id, username, activity, date, location);
                         planAdapter.add(plan);
                     }
                 }catch (Exception e){
@@ -124,6 +127,18 @@ public class PlannerFragment extends Fragment implements View.OnClickListener {
                 if (AppStatus.getInstance(this.getActivity()).isOnline()) {
                     Intent createIntent = new Intent(getActivity(), CreatePlans.class);
                     startActivityForResult(createIntent, 1001);
+                }
+                else {
+                    Toast.makeText(this.getActivity().getApplicationContext(),"You are offline", Toast.LENGTH_LONG).show();
+                }
+
+                break;
+            }
+
+            case R.id.btn_find_id:{
+                if (AppStatus.getInstance(this.getActivity()).isOnline()) {
+                    Intent findIntent = new Intent(getActivity(), FindPlans.class);
+                    startActivity(findIntent);
                 }
                 else {
                     Toast.makeText(this.getActivity().getApplicationContext(),"You are offline", Toast.LENGTH_LONG).show();

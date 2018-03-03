@@ -53,4 +53,6 @@
     <string name="my_friends">My Friends</string>
     <string name="suggestions">Suggestions</string>
     <string name="upcoming_plan">Upcoming Plan</string>
+    <string name="invite_friends_to_plan">Invite Friends to Plan</string>
+    <string name="find_plans">Find Plans</string>
 </resources>
