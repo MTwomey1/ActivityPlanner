@@ -319,4 +319,41 @@ public class ServerRequests {
         new connection(data_to_send, "AddToPlan.php", string_callback).execute();
     }
 
+    public void getPlanUsers(String plan_id, Get_String_Callback string_callback){
+        Map<String, String> data_to_send = new HashMap<>();
+
+        data_to_send.put("plan_id", plan_id);
+
+        // show progress
+        progressDialog.show();
+
+        // send data to sever - the sever will echo back the results
+        new connection(data_to_send, "GetPlanUsers.php", string_callback).execute();
+    }
+
+    public void getPlanInvites(String username, Get_String_Callback string_callback){
+        Map<String, String> data_to_send = new HashMap<>();
+
+        data_to_send.put("username", username);
+
+        // show progress
+        progressDialog.show();
+
+        // send data to sever - the sever will echo back the results
+        new connection(data_to_send, "GetPlanInvites.php", string_callback).execute();
+    }
+
+    public void acceptPlanInvite(String username, String plan_id, Get_String_Callback string_callback){
+        Map<String, String> data_to_send = new HashMap<>();
+
+        data_to_send.put("username", username);
+        data_to_send.put("plan_id", plan_id);
+
+        // show progress
+        progressDialog.show();
+
+        // send data to sever - the sever will echo back the results
+        new connection(data_to_send, "AcceptPlanInvite.php", string_callback).execute();
+    }
+
 }

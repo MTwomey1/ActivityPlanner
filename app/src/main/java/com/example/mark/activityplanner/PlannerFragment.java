@@ -147,6 +147,7 @@ public class PlannerFragment extends Fragment implements View.OnClickListener {
             case R.id.btn_find_id:{
                 if (AppStatus.getInstance(this.getActivity()).isOnline()) {
                     Intent findIntent = new Intent(getActivity(), FindPlans.class);
+                    findIntent.putExtra("username", username);
                     startActivity(findIntent);
                 }
                 else {

@@ -150,8 +150,8 @@ public class AddFriendsToPlan extends AppCompatActivity implements View.OnClickL
             public void done(String returned_string) {
                 try{
                     Log.d("MyTag", returned_string);
+                    setResult(10001);
                     finish();
-                    //startActivity(getIntent());
                 }catch (Exception e){
                     e.printStackTrace();
                 }
