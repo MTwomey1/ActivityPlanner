@@ -22,7 +22,10 @@ import com.google.gson.Gson;
 import org.json.JSONObject;
 
 import java.io.Serializable;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 
@@ -107,9 +110,15 @@ public class PlannerFragment extends Fragment implements View.OnClickListener {
                         String plan_id  = jObject.get("plan_id"+i).toString();
                         String username  = jObject.get("username"+i).toString();
                         String activity  = jObject.get("activity"+i).toString();
+
                         String date  = jObject.get("date"+i).toString();
+                        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-ddd");
+                        Date newDate = format.parse(date);
+                        format = new SimpleDateFormat("dd MMM, yyyy");
+                        String myDate = format.format(newDate);
+
                         String location = jObject.get("location"+i).toString();
-                        Plan plan = new Plan(plan_id, username, activity, date, location);
+                        Plan plan = new Plan(plan_id, username, activity, myDate, location);
                         planAdapter.add(plan);
                     }
                 }catch (Exception e){
