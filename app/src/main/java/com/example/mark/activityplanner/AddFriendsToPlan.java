@@ -38,7 +38,6 @@ import rx.subscriptions.CompositeSubscription;
 public class AddFriendsToPlan extends AppCompatActivity implements View.OnClickListener {
 
     private CompositeSubscription mSubscriptions;
-    private ProgressBar mProgressbar;
     ListView listview;
     ArrayList<String> selectedItems = new ArrayList<>();
     Button btn_invite;
@@ -105,8 +104,6 @@ public class AddFriendsToPlan extends AppCompatActivity implements View.OnClickL
     }
 
     private void handleError(Throwable error) {
-
-        mProgressbar.setVisibility(View.GONE);
 
         if (error instanceof HttpException) {
 

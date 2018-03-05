@@ -76,6 +76,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         btn_manage = view.findViewById(R.id.manage_btn_id);
         tv_activities = view.findViewById(R.id.tv_activities_id);
         btn_friends = view.findViewById(R.id.btn_friends_id);
+        mProgressbar = view.findViewById(R.id.progress);
 
         SharedPreferences sharedPref = this.getActivity().getSharedPreferences("userInfo", Context.MODE_PRIVATE);
         String firstname = sharedPref.getString("firstname","");
@@ -128,6 +129,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     private void getActivities(String username) {
         User user = new User(username);
 
+        mProgressbar.setVisibility(View.VISIBLE);
+
         mSubscriptions.add(RetrofitRequest.getRetrofit().getActivities(user)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
@@ -136,6 +139,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     private void handleResponse(Friends friends) {
+        mProgressbar.setVisibility(View.GONE);
 
         List<String> friendslist = friends.getFriends();
         Set<String> set = new HashSet<String>();
@@ -169,7 +173,6 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     private void handleError(Throwable error) {
 
         mProgressbar.setVisibility(View.GONE);
-
         if (error instanceof HttpException) {
 
             Gson gson = new GsonBuilder().create();

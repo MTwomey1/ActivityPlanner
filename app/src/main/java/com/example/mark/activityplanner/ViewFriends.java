@@ -173,8 +173,6 @@ public class ViewFriends extends AppCompatActivity {
 
     private void handleError(Throwable error) {
 
-        mProgressbar.setVisibility(View.GONE);
-
         if (error instanceof HttpException) {
 
             Gson gson = new GsonBuilder().create();

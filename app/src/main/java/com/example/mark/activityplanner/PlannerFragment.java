@@ -15,6 +15,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -39,6 +40,7 @@ public class PlannerFragment extends Fragment implements View.OnClickListener {
     Button btn_create_plans, btn_find_plans;
     String username;
     List<String> mArrayList = new ArrayList<>();
+    ProgressBar mProgressbar;
 
     public PlannerFragment() {
         // Required empty public constructor
@@ -52,6 +54,7 @@ public class PlannerFragment extends Fragment implements View.OnClickListener {
         SharedPreferences sharedPref = this.getActivity().getSharedPreferences("userInfo", Context.MODE_PRIVATE);
         username = sharedPref.getString("username", null);
 
+        mProgressbar = view.findViewById(R.id.progressBar4);
         lv = view.findViewById(R.id.listView);
         planAdapter = new PlanAdapter(this.getActivity(), R.layout.row_layout);
 
@@ -98,11 +101,14 @@ public class PlannerFragment extends Fragment implements View.OnClickListener {
     }
 
     private void retrieve_plans(String username) {
+        mProgressbar.setVisibility(View.VISIBLE);
+
         ServerRequests server_requests = new ServerRequests(this.getActivity());
         server_requests.retrieve_plans(username, new Get_String_Callback() {
             @Override
             public void done(String returned_string) {
                 //Log.d("myTag", returned_string);
+                mProgressbar.setVisibility(View.GONE);
                 try{
                     JSONObject jObject = new JSONObject(returned_string);
 

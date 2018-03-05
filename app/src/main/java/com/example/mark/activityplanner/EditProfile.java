@@ -58,7 +58,7 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
 
         btn_update = findViewById(R.id.btn_update_id);
         tv = findViewById(R.id.tv_activities);
-        mProgressbar = findViewById(R.id.progressBar);
+        mProgressbar = findViewById(R.id.progressBar3);
         btn_update.setOnClickListener(this);
 
         if(sharedPref.contains("Activities")) {
@@ -143,6 +143,8 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
     }
 
     private void add_activities(Activity activity) {
+        mProgressbar.setVisibility(View.VISIBLE);
+
         mSubscriptions.add(RetrofitRequest.getRetrofit().addActivities(activity)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
@@ -150,6 +152,7 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
     }
 
     private void handleResponse(Response<ResponseBody> responseBodyResponse) {
+        mProgressbar.setVisibility(View.GONE);
         Log.e("Response", responseBodyResponse.message());
     }
 
