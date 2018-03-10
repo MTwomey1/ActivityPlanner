@@ -19,6 +19,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
 
     EditText et_username_login, et_password_login;
     Button btn_login;
+    String f_password;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +46,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
 
                     String username = et_username_login.getText().toString();
                     String password = et_password_login.getText().toString();
+                    f_password = password;
 
                     User user = new User(username, password);
 
@@ -76,7 +78,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
 
                         String username = jObject.getString("username");
                         //String password = jObject.getString("password");
-                       // String email = jObject.getString("email");
+                        String email = jObject.getString("email");
                         String firstname = jObject.getString("firstname");
                         String lastname = jObject.getString("lastname");
 
@@ -90,6 +92,8 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                         editor.putString("username", username);
                         editor.putString("firstname", firstname);
                         editor.putString("lastname", lastname);
+                        editor.putString("email", email);
+                        editor.putString("f_password", f_password);
                         editor.putBoolean("IS_LOGIN", true);
                         editor.apply();
 

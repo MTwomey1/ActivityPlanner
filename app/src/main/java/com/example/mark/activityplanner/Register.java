@@ -1,6 +1,7 @@
 package com.example.mark.activityplanner;
 
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -15,6 +16,11 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.example.mark.activityplanner.network.RetrofitRequest;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -36,6 +42,8 @@ public class Register extends AppCompatActivity implements View.OnClickListener,
     private ProgressBar mProgressbar;
     User user2;
     private boolean valid_email = true;
+    String f_email, f_password;
+    private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +56,7 @@ public class Register extends AppCompatActivity implements View.OnClickListener,
         et_email = findViewById(R.id.et_email_id);
         et_firstname = findViewById(R.id.et_first_name_id);
         et_lastname = findViewById(R.id.et_last_name_id);
+        mAuth = FirebaseAuth.getInstance();
 
         btn_register = findViewById(R.id.btn_reg_user_id);
         mProgressbar = findViewById(R.id.progressBar);
@@ -77,8 +86,8 @@ public class Register extends AppCompatActivity implements View.OnClickListener,
                         return;
                     }
 
-                    if (isEmpty(password) == false) {
-                        et_password.setError("Enter password");
+                    if (isEmpty(password) == false || password.length() < 6) {
+                        et_password.setError("Password cannot be less than 6 characters!");
                         return;
                     }
 
@@ -112,6 +121,8 @@ public class Register extends AppCompatActivity implements View.OnClickListener,
                         if(valid_email) {
                             User user = new User(username, password, email, firstname, lastname);
                             user2 = new User(username, firstname, lastname);
+                            f_email = email;
+                            f_password = password;
                             register_user(user);
                         }
 
@@ -166,11 +177,26 @@ public class Register extends AppCompatActivity implements View.OnClickListener,
 
         Log.e("Error", response.message());
 
-        mProgressbar.setVisibility(View.GONE);
+        firebase_register();
         //showSnackBarMessage(response.getMessage());
 
-        startActivity(new Intent(Register.this, Login.class));
-        finish();
+
+    }
+
+    private void firebase_register() {
+        mAuth.createUserWithEmailAndPassword(f_email, f_password)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if (task.isSuccessful()) {
+                    mProgressbar.setVisibility(View.GONE);
+                    Toast.makeText(getApplicationContext(), "Successful", Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(Register.this, Login.class));
+                    finish();
+                }
+            }
+
+            });
     }
 
     private void handleError(Throwable error) {

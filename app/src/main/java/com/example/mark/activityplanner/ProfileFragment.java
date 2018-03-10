@@ -82,10 +82,13 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         String firstname = sharedPref.getString("firstname","");
         String lastname = sharedPref.getString("lastname","");
         String username = sharedPref.getString("username","");
+        String email = sharedPref.getString("email","");
+        String password = sharedPref.getString("f_password","");
         tv_fullname.setText(firstname + " " + lastname);
 
         if (AppStatus.getInstance(this.getActivity()).isOnline()) {
             getActivities(username);
+            getProfileImage(email, password);
         }
         else {
             Toast.makeText(this.getActivity().getApplicationContext(),"You are offline", Toast.LENGTH_LONG).show();
@@ -124,6 +127,10 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
 
         // Inflate the layout for this fragment
         return view;
+    }
+
+    private void getProfileImage(String email, String password) {
+
     }
 
     private void getActivities(String username) {
