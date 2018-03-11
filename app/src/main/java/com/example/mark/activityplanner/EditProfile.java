@@ -24,6 +24,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.example.mark.activityplanner.network.RetrofitRequest;
 import com.example.mark.activityplanner.utils.Activity;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -68,7 +69,6 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
     Uri uriProfileImage;
     String profileImageUrl;
     FirebaseAuth mAuth;
-    EditText et_display_name;
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
@@ -81,7 +81,6 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
         SharedPreferences sharedPref = getSharedPreferences("userInfo", Context.MODE_PRIVATE);
 
         btn_update = findViewById(R.id.btn_update_id);
-        et_display_name = findViewById(R.id.et_display_name_id);
         btn_save = findViewById(R.id.btn_save_id);
         tv = findViewById(R.id.tv_activities);
         mProgressbar = findViewById(R.id.progressBar3);
@@ -89,6 +88,8 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
         btn_update.setOnClickListener(this);
         btn_save.setOnClickListener(this);
         imageView.setOnClickListener(this);
+
+        get_firebase_image();
 
         if(sharedPref.contains("Activities")) {
             Log.d("myTag", "Trying");
@@ -122,6 +123,18 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
                 }
             }
         });
+    }
+
+    private void get_firebase_image() {
+        FirebaseUser user = mAuth.getCurrentUser();
+
+        if(user != null) {
+            if (user.getPhotoUrl() != null) {
+                Glide.with(this)
+                        .load(user.getPhotoUrl().toString())
+                        .into(imageView);
+            }
+        }
     }
 
     @Override
@@ -182,19 +195,11 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
     }
 
     private void saveUserInformation() {
-        String displayName = et_display_name.getText().toString();
-
-        if(displayName.isEmpty()){
-            et_display_name.setError("Name Required");
-            et_display_name.requestFocus();
-            return;
-        }
 
         FirebaseUser user = mAuth.getCurrentUser();
 
         if(user != null && profileImageUrl != null){
             UserProfileChangeRequest profile = new UserProfileChangeRequest.Builder()
-                    .setDisplayName(displayName)
                     .setPhotoUri(Uri.parse(profileImageUrl))
                     .build();
 
@@ -266,7 +271,9 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
     }
 
     private void uploadImageToFirebaseStorage() {
-        StorageReference profileImageRef = FirebaseStorage.getInstance().getReference("profilepics/"+System.currentTimeMillis() + ".jpg");
+        SharedPreferences sharedPref = getSharedPreferences("userInfo", Context.MODE_PRIVATE);
+        String email = sharedPref.getString("email","");
+        StorageReference profileImageRef = FirebaseStorage.getInstance().getReference("users/"+email+"/profilepics/"+System.currentTimeMillis() + ".jpg");
 
         if(uriProfileImage != null){
             mProgressbar.setVisibility(View.VISIBLE);

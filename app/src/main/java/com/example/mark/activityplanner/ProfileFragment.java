@@ -19,12 +19,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.example.mark.activityplanner.network.RetrofitRequest;
 import com.example.mark.activityplanner.utils.Friends;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -57,6 +61,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     private Button btn_friends;
     private CompositeSubscription mSubscriptions;
     private ProgressBar mProgressbar;
+    private FirebaseAuth mAuth;
+    ImageView image_profile;
 
 
     public ProfileFragment() {
@@ -70,6 +76,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
 
         mSubscriptions = new CompositeSubscription();
+        mAuth = FirebaseAuth.getInstance();
 
         tv_fullname = view.findViewById(R.id.tv_fullname_id);
         btn_logout = view.findViewById(R.id.imageButton_ID);
@@ -77,6 +84,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         tv_activities = view.findViewById(R.id.tv_activities_id);
         btn_friends = view.findViewById(R.id.btn_friends_id);
         mProgressbar = view.findViewById(R.id.progress);
+        image_profile = view.findViewById(R.id.image_profile_id);
 
         SharedPreferences sharedPref = this.getActivity().getSharedPreferences("userInfo", Context.MODE_PRIVATE);
         String firstname = sharedPref.getString("firstname","");
@@ -130,6 +138,19 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     }
 
     private void getProfileImage(String email, String password) {
+        FirebaseUser user = mAuth.getCurrentUser();
+
+        if(user != null) {
+            if (user.getPhotoUrl() != null) {
+                Glide.with(this)
+                        .load(user.getPhotoUrl().toString())
+                        .into(image_profile);
+            }
+            if (user.getDisplayName() != null) {
+                String displayName = user.getDisplayName();
+            }
+        }
+
 
     }
 
@@ -224,6 +245,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                                     editor.putBoolean("IS_LOGIN", false);
                                     editor.apply();
                                     Intent intent = new Intent(getActivity(), MainActivity.class);
+                                    FirebaseAuth.getInstance().signOut();
                                     startActivity(intent);
                                     getActivity().finish();
 
