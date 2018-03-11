@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -24,6 +25,7 @@ public class ViewPlan extends AppCompatActivity implements View.OnClickListener 
     TextView tv_invited, tv_accepted;
     ImageButton btn_people;
     Plan myPlan;
+    Button btn_chat;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +39,7 @@ public class ViewPlan extends AppCompatActivity implements View.OnClickListener 
         btn_people = findViewById(R.id.btn_people_id);
         tv_invited = findViewById(R.id.tv_invited_id);
         tv_accepted = findViewById(R.id.tv_accepted_id);
+        btn_chat = findViewById(R.id.btn_chat_id);
 
         Bundle bundle = getIntent().getExtras();
         String planStr = bundle.getString("Plan");
@@ -54,6 +57,7 @@ public class ViewPlan extends AppCompatActivity implements View.OnClickListener 
         get_plan_users(plan_id);
 
         btn_people.setOnClickListener(this);
+        btn_chat.setOnClickListener(this);
     }
 
     @Override
@@ -118,6 +122,15 @@ public class ViewPlan extends AppCompatActivity implements View.OnClickListener 
                 else {
                     Toast.makeText(this.getApplicationContext(),"You are offline", Toast.LENGTH_LONG).show();
                 }
+
+                break;
+            }
+
+            case R.id.btn_chat_id:{
+                Intent chatRoom = new Intent(this, ChatRoom.class);
+                String planGSON = new Gson().toJson(myPlan);
+                chatRoom.putExtra("Plan", planGSON);
+                startActivity(chatRoom);
 
                 break;
             }

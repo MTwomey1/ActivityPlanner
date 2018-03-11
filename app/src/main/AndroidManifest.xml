@@ -30,7 +30,8 @@
         <activity android:name=".ViewProfile" />
         <activity android:name=".ViewFriends" />
         <activity android:name=".AddFriendsToPlan" />
-        <activity android:name=".FindPlans"></activity>
+        <activity android:name=".FindPlans" />
+        <activity android:name=".ChatRoom"></activity>
     </application>
 
 </manifest>

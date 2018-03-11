@@ -19,13 +19,17 @@ import android.widget.TextView;
 
 import com.example.mark.activityplanner.utils.Activity;
 import com.example.mark.activityplanner.utils.Globals;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public class CreatePlans extends AppCompatActivity implements View.OnClickListener {
@@ -41,6 +45,7 @@ public class CreatePlans extends AppCompatActivity implements View.OnClickListen
     Button btn_create;
     EditText et_location;
     String username, date;
+    private DatabaseReference root = FirebaseDatabase.getInstance().getReference().getRoot();
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
@@ -128,12 +133,19 @@ public class CreatePlans extends AppCompatActivity implements View.OnClickListen
         server_requests.create_plan(username, activity, date, location, new Get_String_Callback() {
             @Override
             public void done(String returned_string) {
+                createChat(returned_string);
                 g.setTest(1);
                 setResult(10001);
                 finish();
 
             }
         });
+    }
+
+    private void createChat(String returned_string) {
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put(returned_string,"");
+        root.updateChildren(map);
     }
 
     // check if editText is empty
