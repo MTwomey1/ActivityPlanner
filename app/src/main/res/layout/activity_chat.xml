@@ -4,11 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.mark.activityplanner.ChatRoom">
+    tools:context="com.example.mark.activityplanner.Chat">
 
     <EditText
-        android:id="@+id/et_message_id"
-        android:layout_width="248dp"
+        android:id="@+id/et_chat_message_id"
+        android:layout_width="245dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
         android:layout_marginLeft="16dp"
@@ -16,11 +16,11 @@
         android:hint="Message"
         android:inputType="textPersonName"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/btn_send_id"
+        app:layout_constraintEnd_toStartOf="@+id/btn_chat_send_id"
         app:layout_constraintLeft_toLeftOf="parent" />
 
     <Button
-        android:id="@+id/btn_send_id"
+        android:id="@+id/btn_chat_send_id"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
@@ -38,7 +38,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-            android:id="@+id/tv_conversation_id"
+            android:id="@+id/tv_chat_id"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
