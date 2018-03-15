@@ -82,22 +82,26 @@ public class FindPlans extends AppCompatActivity {
             @Override
             public void done(String returned_string) {
                 try{
-                    JSONObject jObject = new JSONObject(returned_string);
+                    if (returned_string.equals("[]")) {
 
-                    for (int i = 0; i < jObject.length(); i++){
-                        String plan_id  = jObject.get("plan_id"+i).toString();
-                        String username  = jObject.get("username"+i).toString();
-                        String activity  = jObject.get("activity"+i).toString();
+                    } else {
+                        JSONObject jObject = new JSONObject(returned_string);
 
-                        String date  = jObject.get("date"+i).toString();
-                        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-ddd");
-                        Date newDate = format.parse(date);
-                        format = new SimpleDateFormat("dd MMM, yyyy");
-                        String myDate = format.format(newDate);
+                        for (int i = 0; i < jObject.length(); i++) {
+                            String plan_id = jObject.get("plan_id" + i).toString();
+                            String username = jObject.get("username" + i).toString();
+                            String activity = jObject.get("activity" + i).toString();
 
-                        String location = jObject.get("location"+i).toString();
-                        Plan plan = new Plan(plan_id, username, activity, myDate, location);
-                        planAdapter.add(plan);
+                            String date = jObject.get("date" + i).toString();
+                            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-ddd");
+                            Date newDate = format.parse(date);
+                            format = new SimpleDateFormat("dd MMM, yyyy");
+                            String myDate = format.format(newDate);
+
+                            String location = jObject.get("location" + i).toString();
+                            Plan plan = new Plan(plan_id, username, activity, myDate, location);
+                            planAdapter.add(plan);
+                        }
                     }
                 }catch (Exception e){
                     e.printStackTrace();

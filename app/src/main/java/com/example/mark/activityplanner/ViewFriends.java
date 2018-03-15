@@ -262,12 +262,16 @@ public class ViewFriends extends AppCompatActivity {
             @Override
             public void done(String returned_string) {
                 try{
-                    JSONObject jObject = new JSONObject(returned_string);
+                    if (returned_string.equals("[]")) {
 
-                    for (int i = 0; i < jObject.length(); i++){
-                        String friend_one  = jObject.get("friend_one"+i).toString();
+                    } else {
+                        JSONObject jObject = new JSONObject(returned_string);
 
-                        adapter.add(friend_one);
+                        for (int i = 0; i < jObject.length(); i++) {
+                            String friend_one = jObject.get("friend_one" + i).toString();
+
+                            adapter.add(friend_one);
+                        }
                     }
                 }catch (Exception e){
                     e.printStackTrace();

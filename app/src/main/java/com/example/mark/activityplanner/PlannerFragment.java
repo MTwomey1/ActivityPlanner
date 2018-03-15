@@ -112,7 +112,7 @@ public class PlannerFragment extends Fragment implements View.OnClickListener {
                 try{
                     JSONObject jObject = new JSONObject(returned_string);
 
-                    for (int i = 0; i < jObject.length(); i++){
+                    for (int i = 0; i < jObject.length()/5; i++){
                         String plan_id  = jObject.get("plan_id"+i).toString();
                         String username  = jObject.get("username"+i).toString();
                         String activity  = jObject.get("activity"+i).toString();
