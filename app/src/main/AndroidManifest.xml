@@ -32,7 +32,9 @@
         <activity android:name=".AddFriendsToPlan" />
         <activity android:name=".FindPlans" />
         <activity android:name=".ChatRoom" />
-        <activity android:name=".Chat"></activity>
+        <activity android:name=".Chat">
+            android:windowSoftInputMode="stateHidden|adjustResize"
+        </activity>
     </application>
 
 </manifest>

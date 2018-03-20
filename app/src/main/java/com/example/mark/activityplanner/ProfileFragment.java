@@ -94,14 +94,6 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         String password = sharedPref.getString("f_password","");
         tv_fullname.setText(firstname + " " + lastname);
 
-        if (AppStatus.getInstance(this.getActivity()).isOnline()) {
-            getActivities(username);
-            getProfileImage(email, password);
-        }
-        else {
-            Toast.makeText(this.getActivity().getApplicationContext(),"You are offline", Toast.LENGTH_LONG).show();
-        }
-
         if(sharedPref.contains("Activities")) {
             Set<String> set = sharedPref.getStringSet("Activities", null);
             List<String> sample = new ArrayList<String>(set);
@@ -113,8 +105,14 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                 }
             });
 
-            //tv_activities.setText(sample.toString().replace("[", "").replace("]",""));
-
+            tv_activities.setText(sample.toString().replace("[", "").replace("]",""));
+        }
+        if (AppStatus.getInstance(this.getActivity()).isOnline()) {
+            getActivities(username);
+            getProfileImage(email, password);
+        }
+        else {
+            Toast.makeText(this.getActivity().getApplicationContext(),"You are offline", Toast.LENGTH_LONG).show();
         }
 
         mDataset = new ArrayList<>();

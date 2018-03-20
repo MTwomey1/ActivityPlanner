@@ -168,7 +168,6 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
                 }
                 editor.putStringSet("Activities", set);
                 editor.apply();
-                Log.d("myTag","Fookd String");
 
                 String username = sharedPref.getString("username", null);
 
@@ -227,6 +226,9 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
     private void handleResponse(Response<ResponseBody> responseBodyResponse) {
         mProgressbar.setVisibility(View.GONE);
         Log.e("Response", responseBodyResponse.message());
+        finish();
+        startActivity(getIntent());
+
     }
 
     private void handleError(Throwable error) {
