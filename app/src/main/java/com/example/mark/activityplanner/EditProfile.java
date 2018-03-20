@@ -225,9 +225,8 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
 
     private void handleResponse(Response<ResponseBody> responseBodyResponse) {
         mProgressbar.setVisibility(View.GONE);
-        Log.e("Response", responseBodyResponse.message());
+        Log.d("Response", responseBodyResponse.message());
         finish();
-        startActivity(getIntent());
 
     }
 
