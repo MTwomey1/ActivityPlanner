@@ -1,11 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.NestedScrollView xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_edit_profile"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     tools:context="com.example.mark.activityplanner.EditProfile">
+
+
+
 
     <TextView
         android:id="@+id/textView21"
@@ -32,41 +41,37 @@
         android:id="@+id/checkable_list"
         android:layout_width="335dp"
         android:layout_height="243dp"
-        android:layout_marginBottom="23dp"
-        android:layout_marginTop="185dp"
-        app:layout_constraintBottom_toTopOf="@+id/btn_update_id"
-        app:layout_constraintHorizontal_bias="0.508"
+        android:layout_marginTop="60dp"
+        app:layout_constraintHorizontal_bias="0.51"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0" />
+        android:nestedScrollingEnabled="true"
+        app:layout_constraintTop_toBottomOf="@+id/tv_activities" />
 
     <Button
         android:id="@+id/btn_update_id"
         style="@style/Widget.AppCompat.Button.Colored"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="32dp"
+        android:layout_marginTop="48dp"
         android:background="@drawable/roundedbutton"
         android:text="@string/update"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent" />
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/checkable_list" />
 
     <TextView
         android:id="@+id/tv_activities"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="288dp"
         android:gravity="center"
         android:paddingLeft="20dp"
         android:paddingRight="20dp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/checkable_list"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/image_choose_id" />
+        app:layout_constraintTop_toBottomOf="@+id/textView21" />
 
     <ProgressBar
         android:id="@+id/progressBar3"
@@ -94,4 +99,17 @@
         app:layout_constraintStart_toEndOf="@+id/image_choose_id"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <ImageView
+        android:id="@+id/btn_up_arrow_id"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/checkable_list"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.951"
+        app:layout_constraintStart_toStartOf="parent"
+        android:background="@drawable/ic_drop_up"/>
+
 </android.support.constraint.ConstraintLayout>
+    </android.support.v4.widget.NestedScrollView>

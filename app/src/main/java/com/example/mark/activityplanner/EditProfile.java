@@ -13,12 +13,16 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -69,6 +73,11 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
     Uri uriProfileImage;
     String profileImageUrl;
     FirebaseAuth mAuth;
+    ImageView ibtn_upArrow;
+    ListView listView;
+    static int imageInt = 0;
+    ArrayAdapter<String> adapter;
+    String[] items = {"Airsoft", "American Football", "Archery", "Badminton", "Baseball", "Basketball", "BMX", "Boxing", "Canoe / Kayak", "Climbing", "Cricket", "Curling", "Cycling", "Darts", "Diving", "Dodgeball", "Equestrian", "Fencing", "GAA", "Golf", "Gymnastics", "Handball", "Hiking", "Hockey", "Hurling", "Judo", "Karate", "Motocross", "Mountain Biking", "Mountain Boarding", "Netball", "Paintball", "Rollerblading", "Rowing", "Rugby", "Running", "Sailing", "Scootering", "Shooting", "Skateboarding", "Skiing", "Snooker", "Snowboarding", "Soccer / Football", "Swimming", "Surfing", "Squash", "Table Tennis", "Taekwondo", "Tennis", "Track & Field", "Triathlon", "Ultimate Frisbee", "Unicycling", "Volleyball", "Wakeboarding", "Walking", "Water Polo", "Weightlifting", "Wind Surfing", "Wrestling"};
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
@@ -88,6 +97,8 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
         btn_update.setOnClickListener(this);
         btn_save.setOnClickListener(this);
         imageView.setOnClickListener(this);
+        ibtn_upArrow = findViewById(R.id.btn_up_arrow_id);
+        ibtn_upArrow.setOnClickListener(this);
 
         get_firebase_image();
 
@@ -106,10 +117,9 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
             tv.setText(sample.toString().replace("[", "").replace("]",""));
         }
 
-        ListView listView = findViewById(R.id.checkable_list);
+        listView = findViewById(R.id.checkable_list);
         listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
-        String[] items = {"Airsoft", "American Football", "Archery", "Badminton", "Baseball", "Basketball", "BMX", "Boxing", "Canoe / Kayak", "Climbing", "Cricket", "Curling", "Cycling", "Darts", "Diving", "Dodgeball", "Equestrian", "Fencing", "GAA", "Golf", "Gymnastics", "Handball", "Hiking", "Hockey", "Hurling", "Judo", "Karate", "Motocross", "Mountain Biking", "Mountain Boarding", "Netball", "Paintball", "Rollerblading", "Rowing", "Rugby", "Running", "Sailing", "Scootering", "Shooting", "Skateboarding", "Skiing", "Snooker", "Snowboarding", "Soccer / Football", "Swimming", "Surfing", "Squash", "Table Tennis", "Taekwondo", "Tennis", "Track & Field", "Triathlon", "Ultimate Frisbee", "Unicycling", "Volleyball", "Wakeboarding", "Walking", "Water Polo", "Weightlifting", "Wind Surfing", "Wrestling"};
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.rowlayout, R.id.txt_lan, items);
+        adapter = new ArrayAdapter<String>(this, R.layout.rowlayout, R.id.txt_lan, items);
         listView.setAdapter(adapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -187,6 +197,23 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
             }
             case R.id.btn_save_id: {
                 saveUserInformation();
+
+                break;
+            }
+            case R.id.btn_up_arrow_id: {
+
+                if(imageInt == 0) {
+                    ibtn_upArrow.setBackgroundResource(R.drawable.ic_drop_down);
+                    imageInt = 1;
+                    setListViewHeightBasedOnChildren(listView);
+
+                }
+                else{
+                    imageInt = 0;
+                    finish();
+                    startActivity(getIntent());
+                }
+
 
                 break;
             }
@@ -319,6 +346,33 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
 
     private void showSnackBarMessage(String message) {
         Snackbar.make(findViewById(R.id.activity_edit_profile), message, Snackbar.LENGTH_SHORT).show();
+    }
+
+    public static void setListViewHeightBasedOnChildren(ListView listView) {
+        ListAdapter listAdapter = listView.getAdapter();
+        if (listAdapter == null) return;
+        int desiredWidth = View.MeasureSpec.makeMeasureSpec(listView.getWidth(), View.MeasureSpec.UNSPECIFIED);
+        int totalHeight = 0;
+        View view = null;
+        for (int i = 0; i < listAdapter.getCount(); i++) {
+            view = listAdapter.getView(i, view, listView);
+            if (i == 0) view.setLayoutParams(new
+                    ViewGroup.LayoutParams(desiredWidth,
+                    ViewGroup.LayoutParams.WRAP_CONTENT));
+
+            view.measure(desiredWidth, View.MeasureSpec.UNSPECIFIED);
+            totalHeight += view.getMeasuredHeight();
+        }
+
+        ViewGroup.LayoutParams params = listView.getLayoutParams();
+
+        params.height = totalHeight + (listView.getDividerHeight() *
+                (listAdapter.getCount() - 1));
+        listView.setLayoutParams(params);
+
+
+
+        listView.requestLayout();
     }
 
 }
