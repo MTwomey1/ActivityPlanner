@@ -1,10 +1,12 @@
 package com.example.mark.activityplanner;
 
+import android.support.annotation.NonNull;
+
 /**
  * Created by Mark on 29/12/2017.
  */
 
-public class Plan {
+public class Plan{
     String username, activity, date, location, plan_id;
 
     public Plan(String plan_id, String username, String activity, String date, String location){
@@ -30,4 +32,5 @@ public class Plan {
     public String getLocation(){
         return location;
     }
+
 }

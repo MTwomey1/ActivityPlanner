@@ -71,6 +71,7 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
     private static final int CHOOSE_IMAGE = 101;
     ImageView imageView, iv_gallery;
     Uri uriProfileImage;
+    EditText et_imageName;
     String profileImageUrl;
     FirebaseAuth mAuth;
     ImageView ibtn_upArrow;
@@ -92,6 +93,7 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
         btn_update = findViewById(R.id.btn_update_id);
         btn_save = findViewById(R.id.btn_save_id);
         btn_upload = findViewById(R.id.btn_upload_id);
+        et_imageName = findViewById(R.id.et_imageText_id);
         tv = findViewById(R.id.tv_activities);
         mProgressbar = findViewById(R.id.progressBar3);
         imageView = findViewById(R.id.image_choose_id);

@@ -26,6 +26,8 @@ import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -66,6 +68,8 @@ public class PlannerFragment extends Fragment implements View.OnClickListener {
         else {
             Toast.makeText(this.getActivity().getApplicationContext(),"You are offline", Toast.LENGTH_LONG).show();
         }
+
+        //planAdapter.addAll(planList);
 
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -127,6 +131,7 @@ public class PlannerFragment extends Fragment implements View.OnClickListener {
                         Plan plan = new Plan(plan_id, username, activity, myDate, location);
                         planAdapter.add(plan);
                     }
+
                 }catch (Exception e){
                     e.printStackTrace();
                 }
