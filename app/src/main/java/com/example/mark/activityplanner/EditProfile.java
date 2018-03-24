@@ -63,13 +63,13 @@ import rx.subscriptions.CompositeSubscription;
 
 public class EditProfile extends AppCompatActivity implements View.OnClickListener {
 
-    Button btn_update, btn_save;
+    Button btn_update, btn_save, btn_upload;
     ArrayList<String> selectedItems = new ArrayList<>();
     TextView tv;
     private CompositeSubscription mSubscriptions;
     private ProgressBar mProgressbar;
     private static final int CHOOSE_IMAGE = 101;
-    ImageView imageView;
+    ImageView imageView, iv_gallery;
     Uri uriProfileImage;
     String profileImageUrl;
     FirebaseAuth mAuth;
@@ -91,12 +91,15 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
 
         btn_update = findViewById(R.id.btn_update_id);
         btn_save = findViewById(R.id.btn_save_id);
+        btn_upload = findViewById(R.id.btn_upload_id);
         tv = findViewById(R.id.tv_activities);
         mProgressbar = findViewById(R.id.progressBar3);
         imageView = findViewById(R.id.image_choose_id);
+        iv_gallery = findViewById(R.id.iv_gallery_id);
         btn_update.setOnClickListener(this);
         btn_save.setOnClickListener(this);
         imageView.setOnClickListener(this);
+        iv_gallery.setOnClickListener(this);
         ibtn_upArrow = findViewById(R.id.btn_up_arrow_id);
         ibtn_upArrow.setOnClickListener(this);
 
@@ -121,6 +124,7 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
         listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
         adapter = new ArrayAdapter<String>(this, R.layout.rowlayout, R.id.txt_lan, items);
         listView.setAdapter(adapter);
+        listView.setFocusable(false);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -214,6 +218,11 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
                     startActivity(getIntent());
                 }
 
+
+                break;
+            }
+            case R.id.iv_gallery_id: {
+                showImageChooser();
 
                 break;
             }

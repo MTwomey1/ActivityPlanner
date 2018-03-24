@@ -71,7 +71,9 @@ public class FindPlans extends AppCompatActivity {
         serverRequests.acceptPlanInvite(username, plan_id, new Get_String_Callback() {
             @Override
             public void done(String returned_string) {
-                Toast.makeText(FindPlans.this,"Yo", Toast.LENGTH_LONG).show();
+                Toast.makeText(FindPlans.this,"Invite Accepted", Toast.LENGTH_LONG).show();
+                finish();
+                startActivity(getIntent());
             }
         });
     }

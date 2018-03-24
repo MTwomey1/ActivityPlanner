@@ -31,7 +31,7 @@
     <string name="activity_string">Activity</string>
     <string name="date_string">Date</string>
     <string name="invite_friends_string">Invite Friends</string>
-    <string name="edit_profile_string">Edit Profile</string>
+    <string name="edit_profile_string">Change Profile Picture</string>
     <string name="location_string">Location</string>
     <string name="date_picker_string">Date Picker</string>
     <string name="underline_username"><u>Username</u></string>
@@ -44,7 +44,7 @@
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
-    <string name="update">Update</string>
+    <string name="update">Update Interests</string>
     <string name="creator">Creator</string>
     <string name="location">Location</string>
     <string name="date">Date</string>
@@ -56,4 +56,6 @@
     <string name="invite_friends_to_plan">Invite Friends to Plan</string>
     <string name="find_plans">Find Plans</string>
     <string name="type_your_message">type your message</string>
+    <string name="add_gallery_images">Add Gallery Image</string>
+    <string name="update_interests">Update Interests</string>
 </resources>
