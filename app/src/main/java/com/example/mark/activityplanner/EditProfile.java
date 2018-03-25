@@ -76,6 +76,8 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
     static int imageInt = 0;
     ArrayAdapter<String> adapter;
     String[] items = {"Airsoft", "American Football", "Archery", "Badminton", "Baseball", "Basketball", "BMX", "Boxing", "Canoe / Kayak", "Climbing", "Cricket", "Curling", "Cycling", "Darts", "Diving", "Dodgeball", "Equestrian", "Fencing", "GAA", "Golf", "Gymnastics", "Handball", "Hiking", "Hockey", "Hurling", "Judo", "Karate", "Motocross", "Mountain Biking", "Mountain Boarding", "Netball", "Paintball", "Rollerblading", "Rowing", "Rugby", "Running", "Sailing", "Scootering", "Shooting", "Skateboarding", "Skiing", "Snooker", "Snowboarding", "Soccer / Football", "Swimming", "Surfing", "Squash", "Table Tennis", "Taekwondo", "Tennis", "Track & Field", "Triathlon", "Ultimate Frisbee", "Unicycling", "Volleyball", "Wakeboarding", "Walking", "Water Polo", "Weightlifting", "Wind Surfing", "Wrestling"};
+    private String profilePrefString;
+    private String imageURL;
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
@@ -86,6 +88,7 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
         mAuth = FirebaseAuth.getInstance();
 
         SharedPreferences sharedPref = getSharedPreferences("userInfo", Context.MODE_PRIVATE);
+        imageURL = sharedPref.getString("profileImage","");
 
         btn_update = findViewById(R.id.btn_update_id);
         btn_save = findViewById(R.id.btn_save_id);
@@ -104,7 +107,9 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
         ibtn_upArrow = findViewById(R.id.btn_up_arrow_id);
         ibtn_upArrow.setOnClickListener(this);
 
-        get_firebase_image();
+        if(imageURL != null) {
+            get_firebase_image();
+        }
 
         if(sharedPref.contains("Activities")) {
             Log.d("myTag", "Trying");
@@ -141,15 +146,11 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
     }
 
     private void get_firebase_image() {
-        FirebaseUser user = mAuth.getCurrentUser();
 
-        if(user != null) {
-            if (user.getPhotoUrl() != null) {
-                Glide.with(this)
-                        .load(user.getPhotoUrl().toString())
-                        .into(imageView);
-            }
-        }
+        Glide.with(this)
+                .load(imageURL)
+                .into(imageView);
+                
     }
 
     @Override
@@ -261,6 +262,12 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
                             if(task.isSuccessful()){
                                 Toast.makeText(EditProfile.this, "Profile Updated", Toast.LENGTH_SHORT).show();
                                 mProgressbar6.setVisibility(View.GONE);
+                                if(chooser == 0){
+                                    SharedPreferences sharedPref = getSharedPreferences("userInfo", Context.MODE_PRIVATE);
+                                    SharedPreferences.Editor editor = sharedPref.edit();
+                                    editor.putString("profileImage", profileImageUrl);
+                                    editor.apply();
+                                }
                             }
                         }
                     });
@@ -346,12 +353,13 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
         }
 
         if(uriProfileImage != null){
-            mProgressbar.setVisibility(View.VISIBLE);
+            mProgressbar6.setVisibility(View.VISIBLE);
             profileImageRef.putFile(uriProfileImage).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    mProgressbar.setVisibility(View.GONE);
+                    mProgressbar6.setVisibility(View.GONE);
                     profileImageUrl = taskSnapshot.getDownloadUrl().toString();
+
 
                     if(chooser == 1){
                         saveUserInformation();

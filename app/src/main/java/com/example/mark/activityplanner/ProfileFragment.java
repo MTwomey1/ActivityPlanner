@@ -63,6 +63,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     private ProgressBar mProgressbar;
     private FirebaseAuth mAuth;
     ImageView image_profile;
+    private String profileImage;
 
 
     public ProfileFragment() {
@@ -92,6 +93,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         String username = sharedPref.getString("username","");
         String email = sharedPref.getString("email","");
         String password = sharedPref.getString("f_password","");
+        profileImage = sharedPref.getString("profileImage", "");
         tv_fullname.setText(firstname + " " + lastname);
 
         if(sharedPref.contains("Activities")) {
@@ -138,18 +140,11 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     private void getProfileImage(String email, String password) {
         FirebaseUser user = mAuth.getCurrentUser();
 
-        if(user != null) {
-            if (user.getPhotoUrl() != null) {
+        if(profileImage != null) {
                 Glide.with(this)
-                        .load(user.getPhotoUrl().toString())
+                        .load(profileImage)
                         .into(image_profile);
             }
-            if (user.getDisplayName() != null) {
-                String displayName = user.getDisplayName();
-            }
-        }
-
-
     }
 
     private void getActivities(String username) {
