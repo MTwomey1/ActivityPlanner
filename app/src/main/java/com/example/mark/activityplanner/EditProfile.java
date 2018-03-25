@@ -13,14 +13,12 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
@@ -49,8 +47,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -67,8 +63,9 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
     ArrayList<String> selectedItems = new ArrayList<>();
     TextView tv;
     private CompositeSubscription mSubscriptions;
-    private ProgressBar mProgressbar;
+    private ProgressBar mProgressbar, mProgressbar6;
     private static final int CHOOSE_IMAGE = 101;
+    private static  int chooser = 0;
     ImageView imageView, iv_gallery;
     Uri uriProfileImage;
     EditText et_imageName;
@@ -96,10 +93,12 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
         et_imageName = findViewById(R.id.et_imageText_id);
         tv = findViewById(R.id.tv_activities);
         mProgressbar = findViewById(R.id.progressBar3);
+        mProgressbar6 = findViewById(R.id.progressBar6);
         imageView = findViewById(R.id.image_choose_id);
         iv_gallery = findViewById(R.id.iv_gallery_id);
         btn_update.setOnClickListener(this);
         btn_save.setOnClickListener(this);
+        btn_upload.setOnClickListener(this);
         imageView.setOnClickListener(this);
         iv_gallery.setOnClickListener(this);
         ibtn_upArrow = findViewById(R.id.btn_up_arrow_id);
@@ -197,7 +196,7 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
                 break;
             }
             case R.id.image_choose_id: {
-                showImageChooser();
+                showImageChooser(0);
 
                 break;
             }
@@ -224,7 +223,22 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
                 break;
             }
             case R.id.iv_gallery_id: {
-                showImageChooser();
+
+                showImageChooser(1);
+
+                break;
+            }
+            case R.id.btn_upload_id: {
+                mProgressbar6.setVisibility(View.VISIBLE);
+
+                String displayName = et_imageName.getText().toString();
+                if(displayName.isEmpty()){
+                    et_imageName.setError("Name required");
+                    et_imageName.requestFocus();
+                    return;
+                }
+
+                uploadImageToFirebaseStorage();
 
                 break;
             }
@@ -246,6 +260,7 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
                         public void onComplete(@NonNull Task<Void> task) {
                             if(task.isSuccessful()){
                                 Toast.makeText(EditProfile.this, "Profile Updated", Toast.LENGTH_SHORT).show();
+                                mProgressbar6.setVisibility(View.GONE);
                             }
                         }
                     });
@@ -300,8 +315,12 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
 
             try {
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uriProfileImage);
-                imageView.setImageBitmap(bitmap);
-
+                if(chooser == 0) {
+                    imageView.setImageBitmap(bitmap);
+                }
+                else{
+                    iv_gallery.setImageBitmap(bitmap);
+                }
                 uploadImageToFirebaseStorage();
             } catch (IOException e) {
                 e.printStackTrace();
@@ -312,7 +331,19 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
     private void uploadImageToFirebaseStorage() {
         SharedPreferences sharedPref = getSharedPreferences("userInfo", Context.MODE_PRIVATE);
         String email = sharedPref.getString("email","");
-        StorageReference profileImageRef = FirebaseStorage.getInstance().getReference("users/"+email+"/profilepics/"+System.currentTimeMillis() + ".jpg");
+        StorageReference profileImageRef;
+        if (chooser == 0) {
+            profileImageRef = FirebaseStorage.getInstance().getReference("users/"+email+"/profilepics/"+System.currentTimeMillis() + ".jpg");
+        }
+        else{
+            String displayName = et_imageName.getText().toString();
+            if(displayName.isEmpty()){
+                et_imageName.setError("Name required");
+                et_imageName.requestFocus();
+                return;
+            }
+            profileImageRef = FirebaseStorage.getInstance().getReference("users/"+email+"/images/"+displayName+ ".jpg");
+        }
 
         if(uriProfileImage != null){
             mProgressbar.setVisibility(View.VISIBLE);
@@ -322,6 +353,9 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
                     mProgressbar.setVisibility(View.GONE);
                     profileImageUrl = taskSnapshot.getDownloadUrl().toString();
 
+                    if(chooser == 1){
+                        saveUserInformation();
+                    }
 
                 }
             }).addOnFailureListener(new OnFailureListener() {
@@ -334,11 +368,18 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
         }
     }
 
-    private void showImageChooser(){
+    private void showImageChooser(int i){
         Intent intent = new Intent();
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(Intent.createChooser(intent, "Select Profile Image"), CHOOSE_IMAGE);
+        if(i == 0) {
+            chooser = 0;
+            startActivityForResult(Intent.createChooser(intent, "Select Profile Image"), CHOOSE_IMAGE);
+        }
+        else{
+            startActivityForResult(Intent.createChooser(intent, "Select Image"), CHOOSE_IMAGE);
+            chooser = 1;
+        }
     }
 
     private void add_activities2(Set<String> set, String username) {
