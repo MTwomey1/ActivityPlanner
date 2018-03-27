@@ -27,8 +27,14 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.example.mark.activityplanner.network.RetrofitRequest;
 import com.example.mark.activityplanner.utils.Friends;
+import com.example.mark.activityplanner.utils.Upload;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -65,6 +71,9 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     ImageView image_profile;
     private String profileImage;
 
+    private DatabaseReference mDatabaseRef;
+    private List<Upload> mUploads;
+
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -78,6 +87,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
 
         mSubscriptions = new CompositeSubscription();
         mAuth = FirebaseAuth.getInstance();
+
 
         tv_fullname = view.findViewById(R.id.tv_fullname_id);
         btn_logout = view.findViewById(R.id.imageButton_ID);
@@ -96,6 +106,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         profileImage = sharedPref.getString("profileImage", "");
         tv_fullname.setText(firstname + " " + lastname);
 
+        mDatabaseRef = FirebaseDatabase.getInstance().getReference("users/"+username+"/images");
+
         if(sharedPref.contains("Activities")) {
             Set<String> set = sharedPref.getStringSet("Activities", null);
             List<String> sample = new ArrayList<String>(set);
@@ -112,29 +124,52 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         if (AppStatus.getInstance(this.getActivity()).isOnline()) {
             getActivities(username);
             getProfileImage(email, password);
+            getImages(email);
         }
         else {
             Toast.makeText(this.getActivity().getApplicationContext(),"You are offline", Toast.LENGTH_LONG).show();
         }
 
-        mDataset = new ArrayList<>();
-        for (int i = 1; i < 11; i++) {
-            mDataset.add("Photo # " + i);
-        }
+        mUploads = new ArrayList<>();
+        //for (int i = 1; i < 11; i++) {
+           // mDataset.add("Photo # " + i);
+        //}
 
         mRecycleView = view.findViewById(R.id.recyclerView);
         mRecycleView.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
         mRecycleView.setLayoutManager(mLayoutManager);
-        mAdapter = new MainAdapter(mDataset);
-        mRecycleView.setAdapter(mAdapter);
+        //mAdapter = new MainAdapter(mDataset);
+        //mRecycleView.setAdapter(mAdapter);
 
         btn_logout.setOnClickListener(this);
         btn_manage.setOnClickListener(this);
         btn_friends.setOnClickListener(this);
 
+        mDatabaseRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for(DataSnapshot postSnapshot : dataSnapshot.getChildren()){
+                    Upload upload = postSnapshot.getValue(Upload.class);
+                    mUploads.add(upload);
+                }
+
+                mAdapter = new MainAdapter(getActivity(), mUploads);
+                mRecycleView.setAdapter(mAdapter);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Toast.makeText(getActivity(), databaseError.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+
         // Inflate the layout for this fragment
         return view;
+    }
+
+    private void getImages(String email) {
+
     }
 
     private void getProfileImage(String email, String password) {

@@ -1,11 +1,13 @@
 package com.example.mark.activityplanner;
 
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
@@ -15,6 +17,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.MimeTypeMap;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -29,6 +32,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.example.mark.activityplanner.network.RetrofitRequest;
 import com.example.mark.activityplanner.utils.Activity;
+import com.example.mark.activityplanner.utils.Upload;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -36,8 +40,12 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.StorageTask;
 import com.google.firebase.storage.UploadTask;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -65,6 +73,7 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
     private CompositeSubscription mSubscriptions;
     private ProgressBar mProgressbar, mProgressbar6;
     private static final int CHOOSE_IMAGE = 101;
+    private static final int PICK_IMAGE_REQUEST = 1;
     private static  int chooser = 0;
     ImageView imageView, iv_gallery;
     Uri uriProfileImage;
@@ -78,6 +87,10 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
     String[] items = {"Airsoft", "American Football", "Archery", "Badminton", "Baseball", "Basketball", "BMX", "Boxing", "Canoe / Kayak", "Climbing", "Cricket", "Curling", "Cycling", "Darts", "Diving", "Dodgeball", "Equestrian", "Fencing", "GAA", "Golf", "Gymnastics", "Handball", "Hiking", "Hockey", "Hurling", "Judo", "Karate", "Motocross", "Mountain Biking", "Mountain Boarding", "Netball", "Paintball", "Rollerblading", "Rowing", "Rugby", "Running", "Sailing", "Scootering", "Shooting", "Skateboarding", "Skiing", "Snooker", "Snowboarding", "Soccer / Football", "Swimming", "Surfing", "Squash", "Table Tennis", "Taekwondo", "Tennis", "Track & Field", "Triathlon", "Ultimate Frisbee", "Unicycling", "Volleyball", "Wakeboarding", "Walking", "Water Polo", "Weightlifting", "Wind Surfing", "Wrestling"};
     private String profilePrefString;
     private String imageURL;
+    private  StorageReference mStorageRef;
+    private DatabaseReference mDatabaseRef;
+    private StorageTask mUploadTask;
+    private Uri mImageUri;
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
@@ -89,6 +102,10 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
 
         SharedPreferences sharedPref = getSharedPreferences("userInfo", Context.MODE_PRIVATE);
         imageURL = sharedPref.getString("profileImage","");
+        String username = sharedPref.getString("username","");
+
+        mStorageRef = FirebaseStorage.getInstance().getReference("users/"+username+"/images");
+        mDatabaseRef = FirebaseDatabase.getInstance().getReference("users/"+username+"/images");
 
         btn_update = findViewById(R.id.btn_update_id);
         btn_save = findViewById(R.id.btn_save_id);
@@ -150,7 +167,7 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
         Glide.with(this)
                 .load(imageURL)
                 .into(imageView);
-                
+
     }
 
     @Override
@@ -230,7 +247,6 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
                 break;
             }
             case R.id.btn_upload_id: {
-                mProgressbar6.setVisibility(View.VISIBLE);
 
                 String displayName = et_imageName.getText().toString();
                 if(displayName.isEmpty()){
@@ -238,11 +254,64 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
                     et_imageName.requestFocus();
                     return;
                 }
-
-                uploadImageToFirebaseStorage();
+                else {
+                    //mProgressbar6.setVisibility(View.VISIBLE);
+                    //uploadImageToFirebaseStorage();
+                    if(mUploadTask != null && mUploadTask.isInProgress()){
+                        Toast.makeText(EditProfile.this, "Upload in progress", Toast.LENGTH_SHORT).show();
+                    }else {
+                        uploadFile();
+                    }
+                }
 
                 break;
             }
+        }
+    }
+
+    private String getFileExtension(Uri uri){
+        ContentResolver cR = getContentResolver();
+        MimeTypeMap mime = MimeTypeMap.getSingleton();
+        return mime.getExtensionFromMimeType(cR.getType(uri));
+    }
+
+    private void uploadFile() {
+        if(mImageUri != null){
+            StorageReference fileReference = mStorageRef.child(System.currentTimeMillis() + "." + getFileExtension(mImageUri));
+
+            mUploadTask = fileReference.putFile(mImageUri)
+                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            Handler handler = new Handler();
+                            handler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    mProgressbar6.setProgress(0);
+                                }
+                            }, 500);
+
+                            Toast.makeText(EditProfile.this, "Upload Scucessful", Toast.LENGTH_LONG).show();
+                            Upload upload = new Upload(et_imageName.getText().toString().trim(), taskSnapshot.getDownloadUrl().toString());
+                            String uploadId = mDatabaseRef.push().getKey();
+                            mDatabaseRef.child(uploadId).setValue(upload);
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(EditProfile.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    })
+                    .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                            double progress = (100.0 * taskSnapshot.getBytesTransferred() / taskSnapshot.getTotalByteCount());
+                            mProgressbar6.setProgress((int) progress);
+                        }
+                    });
+        }else{
+            Toast.makeText(this, "No file selected", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -333,12 +402,19 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
                 e.printStackTrace();
             }
         }
+
+        if(requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData()!=null){
+            mImageUri = data.getData();
+
+            Glide.with(this).load(mImageUri).into(iv_gallery);
+        }
     }
 
     private void uploadImageToFirebaseStorage() {
         SharedPreferences sharedPref = getSharedPreferences("userInfo", Context.MODE_PRIVATE);
         String email = sharedPref.getString("email","");
         StorageReference profileImageRef;
+        DatabaseReference databaseRef;
         if (chooser == 0) {
             profileImageRef = FirebaseStorage.getInstance().getReference("users/"+email+"/profilepics/"+System.currentTimeMillis() + ".jpg");
         }
@@ -350,6 +426,7 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
                 return;
             }
             profileImageRef = FirebaseStorage.getInstance().getReference("users/"+email+"/images/"+displayName+ ".jpg");
+            databaseRef = FirebaseDatabase.getInstance().getReference("users/"+email+"/images/"+displayName+ ".jpg");
         }
 
         if(uriProfileImage != null){
@@ -385,7 +462,7 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
             startActivityForResult(Intent.createChooser(intent, "Select Profile Image"), CHOOSE_IMAGE);
         }
         else{
-            startActivityForResult(Intent.createChooser(intent, "Select Image"), CHOOSE_IMAGE);
+            startActivityForResult(Intent.createChooser(intent, "Select Image"), PICK_IMAGE_REQUEST);
             chooser = 1;
         }
     }
