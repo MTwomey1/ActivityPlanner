@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.mark.activityplanner.utils.Upload;
 
 
@@ -23,10 +24,14 @@ class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
 
     private List<Upload> mDataset;
     private Context mContext;
+    RequestOptions options = new RequestOptions();
 
     public MainAdapter(Context context, List<Upload> mDataset) {
         mContext = context;
         this.mDataset = mDataset;
+        //options.fitCenter();
+        options.centerCrop();
+        options.placeholder(R.drawable.placeholder);
     }
 
     @Override
@@ -44,7 +49,9 @@ class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
         holder.mTitle.setText(uploadCurrent.getName());
         Glide.with(mContext)
                 .load(uploadCurrent.getImageUrl())
+                .apply(options)
                 .into(holder.mImageView);
+
        // holder.mImageView.setImageResource(R.drawable.placeholder);
     }
 

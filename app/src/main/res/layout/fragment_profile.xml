@@ -67,10 +67,11 @@
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recyclerView"
             android:layout_width="308dp"
-            android:layout_height="167dp"
+            android:layout_height="250dp"
             android:layout_marginBottom="408dp"
             android:layout_marginTop="8dp"
             android:clipToPadding="false"
+            android:scrollbars="horizontal"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
@@ -94,13 +95,14 @@
             style="@android:style/Widget.Button"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
-            android:layout_marginBottom="32dp"
+            android:layout_marginTop="104dp"
             android:background="@drawable/roundedbutton2"
             android:text="@string/youtube_string"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView15" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btn_friends_id" />
 
         <ImageButton
             android:id="@+id/manage_btn_id"
