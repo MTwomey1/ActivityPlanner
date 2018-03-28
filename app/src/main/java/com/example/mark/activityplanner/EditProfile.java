@@ -255,11 +255,12 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
                     return;
                 }
                 else {
-                    //mProgressbar6.setVisibility(View.VISIBLE);
+
                     //uploadImageToFirebaseStorage();
                     if(mUploadTask != null && mUploadTask.isInProgress()){
                         Toast.makeText(EditProfile.this, "Upload in progress", Toast.LENGTH_SHORT).show();
                     }else {
+                        mProgressbar6.setVisibility(View.VISIBLE);
                         uploadFile();
                     }
                 }
@@ -291,6 +292,7 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
                                 }
                             }, 500);
 
+                            mProgressbar6.setVisibility(View.GONE);
                             Toast.makeText(EditProfile.this, "Upload Scucessful", Toast.LENGTH_LONG).show();
                             Upload upload = new Upload(et_imageName.getText().toString().trim(), taskSnapshot.getDownloadUrl().toString());
                             String uploadId = mDatabaseRef.push().getKey();
