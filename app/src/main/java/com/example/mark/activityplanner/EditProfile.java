@@ -21,11 +21,13 @@ import android.webkit.MimeTypeMap;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -65,11 +67,11 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
-public class EditProfile extends AppCompatActivity implements View.OnClickListener {
+public class EditProfile extends AppCompatActivity implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
 
     Button btn_update, btn_save, btn_upload;
     ArrayList<String> selectedItems = new ArrayList<>();
-    TextView tv;
+    private TextView tv, tv_switch;
     private CompositeSubscription mSubscriptions;
     private ProgressBar mProgressbar, mProgressbar6;
     private static final int CHOOSE_IMAGE = 101;
@@ -91,18 +93,23 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
     private DatabaseReference mDatabaseRef;
     private StorageTask mUploadTask;
     private Uri mImageUri;
+    private Switch aSwitch;
+    SharedPreferences sharedPref;
+    SharedPreferences.Editor editor;
+    private String username;
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        sharedPref = getSharedPreferences("userInfo", Context.MODE_PRIVATE);
+        editor = sharedPref.edit();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_profile);
         mSubscriptions = new CompositeSubscription();
         mAuth = FirebaseAuth.getInstance();
 
-        SharedPreferences sharedPref = getSharedPreferences("userInfo", Context.MODE_PRIVATE);
         imageURL = sharedPref.getString("profileImage","");
-        String username = sharedPref.getString("username","");
+        username = sharedPref.getString("username","");
 
         mStorageRef = FirebaseStorage.getInstance().getReference("users/"+username+"/images");
         mDatabaseRef = FirebaseDatabase.getInstance().getReference("users/"+username+"/images");
@@ -116,6 +123,9 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
         mProgressbar6 = findViewById(R.id.progressBar6);
         imageView = findViewById(R.id.image_choose_id);
         iv_gallery = findViewById(R.id.iv_gallery_id);
+        aSwitch = findViewById(R.id.switch1);
+        tv_switch = findViewById(R.id.tv_switch_id);
+
         btn_update.setOnClickListener(this);
         btn_save.setOnClickListener(this);
         btn_upload.setOnClickListener(this);
@@ -123,6 +133,7 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
         iv_gallery.setOnClickListener(this);
         ibtn_upArrow = findViewById(R.id.btn_up_arrow_id);
         ibtn_upArrow.setOnClickListener(this);
+        aSwitch.setOnCheckedChangeListener(this);
 
         if(imageURL != null) {
             get_firebase_image();
@@ -141,6 +152,11 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
             });
 
             tv.setText(sample.toString().replace("[", "").replace("]",""));
+        }
+
+        if(sharedPref.contains("switch")){
+            Boolean switchPos = sharedPref.getBoolean("switch", false);
+            aSwitch.setChecked(switchPos);
         }
 
         listView = findViewById(R.id.checkable_list);
@@ -174,8 +190,6 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_update_id: {
-                SharedPreferences sharedPref = getSharedPreferences("userInfo", Context.MODE_PRIVATE);
-                SharedPreferences.Editor editor = sharedPref.edit();
 
                 Set<String> set = new HashSet<String>();
                 Collection<String> removeCandidates = new ArrayList<>();
@@ -334,8 +348,6 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
                                 Toast.makeText(EditProfile.this, "Profile Updated", Toast.LENGTH_SHORT).show();
                                 mProgressbar6.setVisibility(View.GONE);
                                 if(chooser == 0){
-                                    SharedPreferences sharedPref = getSharedPreferences("userInfo", Context.MODE_PRIVATE);
-                                    SharedPreferences.Editor editor = sharedPref.edit();
                                     editor.putString("profileImage", profileImageUrl);
                                     editor.apply();
                                 }
@@ -413,7 +425,6 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
     }
 
     private void uploadImageToFirebaseStorage() {
-        SharedPreferences sharedPref = getSharedPreferences("userInfo", Context.MODE_PRIVATE);
         String email = sharedPref.getString("email","");
         StorageReference profileImageRef;
         DatabaseReference databaseRef;
@@ -514,4 +525,37 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
         listView.requestLayout();
     }
 
+    @Override
+    public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+        int choice;
+        if(aSwitch.isChecked()){
+            tv_switch.setText("Profile Currently Public");
+            editor.putBoolean("switch", true);
+            editor.apply();
+            choice = 1;
+            make_public(choice);
+        }else{
+            tv_switch.setText("Profile Currently Private");
+            editor.putBoolean("switch", false);
+            editor.apply();
+            choice = 0;
+            make_public(choice);
+        }
+    }
+
+    private void make_public(int choice) {
+        String choiceStr = String.valueOf(choice);
+
+        ServerRequests serverRequests = new ServerRequests(this);
+        serverRequests.makePublic(username, choiceStr, new Get_String_Callback() {
+            @Override
+            public void done(String returned_string) {
+                if(returned_string.equals("Successful")){
+                    Toast.makeText(EditProfile.this, "Privacy Updated", Toast.LENGTH_SHORT).show();
+                }else{
+                    Toast.makeText(EditProfile.this, "Error", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
 }
