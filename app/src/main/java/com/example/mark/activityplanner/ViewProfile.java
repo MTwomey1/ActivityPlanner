@@ -100,15 +100,15 @@ public class ViewProfile extends AppCompatActivity implements View.OnClickListen
                 try{
                     JSONObject jObject = new JSONObject(returned_string);
 
-                    for (int i = 0; i < jObject.length(); i++){
-                        username  = jObject.get("username"+i).toString();
-                        String firstname  = jObject.get("firstname"+i).toString();
-                        String lastname  = jObject.get("lastname"+i).toString();
+                    //for (int i = 0; i < jObject.length(); i++){
+                        username  = jObject.get("username").toString();
+                        String firstname  = jObject.get("firstname").toString();
+                        String lastname  = jObject.get("lastname").toString();
                         //String activities  = jObject.get("activities"+i).toString();
-                        Log.d("myTag", lastname);
+                        Log.d("myTag", String.valueOf(jObject.length()));
                         tv_user.setText(username);
                         tv_name.setText(firstname + " " + lastname);
-                    }
+                    //}
                 }catch (Exception e){
                     e.printStackTrace();
                 }
