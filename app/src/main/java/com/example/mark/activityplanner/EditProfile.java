@@ -532,13 +532,13 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
             tv_switch.setText("Profile Currently Public");
             editor.putBoolean("switch", true);
             editor.apply();
-            choice = 1;
+            choice = 2;
             make_public(choice);
         }else{
             tv_switch.setText("Profile Currently Private");
             editor.putBoolean("switch", false);
             editor.apply();
-            choice = 0;
+            choice = 1;
             make_public(choice);
         }
     }
