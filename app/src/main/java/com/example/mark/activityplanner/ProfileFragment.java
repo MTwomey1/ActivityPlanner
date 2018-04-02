@@ -71,7 +71,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     private Button btn_friends;
     private CompositeSubscription mSubscriptions;
     private ProgressBar mProgressbar;
-    private FirebaseAuth mAuth;
+    FirebaseAuth mAuth;
     ImageView image_profile;
     private String profileImage;
     private SharedPreferences sharedPref;
@@ -163,7 +163,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         btn_manage.setOnClickListener(this);
         btn_friends.setOnClickListener(this);
 
-        listener = mDatabaseRef.addValueEventListener(new ValueEventListener() {
+        mDatabaseRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for(DataSnapshot postSnapshot : dataSnapshot.getChildren()){
@@ -322,11 +322,11 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                                     //editor.apply();
                                     editor.clear();
                                     editor.commit();
-                                    mDatabaseRef.removeEventListener(listener);
-                                    FirebaseAuth.getInstance().signOut();
+                                    //mDatabaseRef.removeEventListener(listener);
                                     Intent intent = new Intent(getActivity(), MainActivity.class);
                                     startActivity(intent);
                                     getActivity().finish();
+                                    FirebaseAuth.getInstance().signOut();
 
 
                                 }

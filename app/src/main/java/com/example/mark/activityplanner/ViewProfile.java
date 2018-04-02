@@ -12,12 +12,23 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.mark.activityplanner.network.RetrofitRequest;
 import com.example.mark.activityplanner.utils.Friends;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -43,6 +54,8 @@ public class ViewProfile extends AppCompatActivity implements View.OnClickListen
     private String username;
     private ProgressBar mProgressbar;
     private CompositeSubscription mSubscriptions;
+    private DatabaseReference mDatabaseRef;
+    private ImageView iv_profile_image;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +69,7 @@ public class ViewProfile extends AppCompatActivity implements View.OnClickListen
         tv_name = findViewById(R.id.tv_fullname_id);
         btn_add_user = findViewById(R.id.add_user_btn_id);
         tv_activities = findViewById(R.id.tv_activities_id);
+        iv_profile_image = findViewById(R.id.image_profile_id);
 
         btn_add_user.setOnClickListener(this);
 
@@ -135,6 +149,8 @@ public class ViewProfile extends AppCompatActivity implements View.OnClickListen
                     tv_user.setText("Profile: " + username);
                     tv_name.setText(firstname + " " + lastname);
 
+                    getProfileImage(username);
+
                     if(privacy.equals("1")){
                         get_activities();
                         get_images();
@@ -145,6 +161,34 @@ public class ViewProfile extends AppCompatActivity implements View.OnClickListen
                 }
             }
         });
+    }
+
+    private void getProfileImage(String username) {
+        mDatabaseRef = FirebaseDatabase.getInstance().getReference("users/"+username);
+        Query lastQuery = mDatabaseRef.child("profileImages").orderByKey().limitToLast(1);
+        lastQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot child: dataSnapshot.getChildren()) {
+                    String fUrl = child.child("imageUrl").getValue().toString();
+                    setProfileImage(fUrl);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.e("TAG", "Failed to read app title value.", databaseError.toException());
+            }
+        });
+    }
+
+    private void setProfileImage(String fUrl) {
+        RequestOptions requestOptions = new RequestOptions();
+        requestOptions = requestOptions.transforms(new RoundedCorners(16));
+        Glide.with(this)
+                .load(fUrl)
+                .apply(requestOptions)
+                .into(iv_profile_image);
     }
 
     private void get_images() {

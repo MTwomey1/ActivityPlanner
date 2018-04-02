@@ -78,6 +78,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
             @Override
             public void done(String returned_string) {
                 if (returned_string.equals("failed")) {
+                    progressBar.setVisibility(View.GONE);
                     show_error_message("Incorrect username or password");
                     Log.d("myTag","Fookd String");
                 } else {
