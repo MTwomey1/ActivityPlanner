@@ -45,4 +45,8 @@ public interface Retrofit_Interface {
     @POST("getActivities")
     Observable<Friends> getActivities(@Body User user);
 
+    // Check friendship
+    @POST("checkFriends")
+    Observable<Friends> checkFriends(@Body Friend friend);
+
 }

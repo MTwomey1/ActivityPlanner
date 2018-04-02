@@ -9,6 +9,8 @@ import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
@@ -21,7 +23,9 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.mark.activityplanner.network.RetrofitRequest;
+import com.example.mark.activityplanner.utils.Friend;
 import com.example.mark.activityplanner.utils.Friends;
+import com.example.mark.activityplanner.utils.Upload;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -41,6 +45,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import okhttp3.ResponseBody;
 import retrofit2.Response;
 import retrofit2.adapter.rxjava.HttpException;
 import rx.android.schedulers.AndroidSchedulers;
@@ -51,11 +56,17 @@ public class ViewProfile extends AppCompatActivity implements View.OnClickListen
 
     private TextView tv_user, tv_name, tv_activities;
     private ImageButton btn_add_user;
-    private String username;
+    private String username, mUsername;
     private ProgressBar mProgressbar;
     private CompositeSubscription mSubscriptions;
     private DatabaseReference mDatabaseRef;
     private ImageView iv_profile_image;
+    private DatabaseReference mDatabaseRef2;
+    private List<Upload> mUploads;
+    private RecyclerView mRecycleView;
+    private RecyclerView.LayoutManager mLayoutManager;
+    private RecyclerView.Adapter mAdapter;
+    private SharedPreferences sharedPref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,12 +75,19 @@ public class ViewProfile extends AppCompatActivity implements View.OnClickListen
 
         mProgressbar = findViewById(R.id.progress);
         mSubscriptions = new CompositeSubscription();
+        sharedPref = getSharedPreferences("userInfo", Context.MODE_PRIVATE);
+        mUsername = sharedPref.getString("username", null);
 
         tv_user = findViewById(R.id.tv_profile);
         tv_name = findViewById(R.id.tv_fullname_id);
         btn_add_user = findViewById(R.id.add_user_btn_id);
         tv_activities = findViewById(R.id.tv_activities_id);
         iv_profile_image = findViewById(R.id.image_profile_id);
+
+        mRecycleView = findViewById(R.id.recyclerView);
+        mRecycleView.setHasFixedSize(true);
+        mLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        mRecycleView.setLayoutManager(mLayoutManager);
 
         btn_add_user.setOnClickListener(this);
 
@@ -98,8 +116,6 @@ public class ViewProfile extends AppCompatActivity implements View.OnClickListen
                         .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                SharedPreferences sharedPref = getSharedPreferences("userInfo", Context.MODE_PRIVATE);
-                                String mUsername = sharedPref.getString("username", null);
                                 add_user(mUsername, username);
                             }
                         })
@@ -150,6 +166,7 @@ public class ViewProfile extends AppCompatActivity implements View.OnClickListen
                     tv_name.setText(firstname + " " + lastname);
 
                     getProfileImage(username);
+                    checkIfFriends(mUsername, username);
 
                     if(privacy.equals("1")){
                         get_activities();
@@ -161,6 +178,25 @@ public class ViewProfile extends AppCompatActivity implements View.OnClickListen
                 }
             }
         });
+    }
+
+    private void checkIfFriends(String mUsername, String username) {
+        Friend friend = new Friend(mUsername, username);
+
+        mSubscriptions.add(RetrofitRequest.getRetrofit().checkFriends(friend)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe(this::handleFriendResponse,this::handleError));
+    }
+
+    private void handleFriendResponse(Friends friends) {
+        List<String> friendslist = friends.getFriends();
+
+        String are_friends = friendslist.get(0);
+
+        if(are_friends.equals("false")){
+            btn_add_user.setVisibility(View.VISIBLE);
+        }
     }
 
     private void getProfileImage(String username) {
@@ -192,6 +228,26 @@ public class ViewProfile extends AppCompatActivity implements View.OnClickListen
     }
 
     private void get_images() {
+        mDatabaseRef2 = FirebaseDatabase.getInstance().getReference("users/"+username+"/images");
+        mUploads = new ArrayList<>();
+
+        mDatabaseRef2.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for(DataSnapshot postSnapshot : dataSnapshot.getChildren()){
+                    Upload upload = postSnapshot.getValue(Upload.class);
+                    mUploads.add(upload);
+                }
+
+                mAdapter = new MainAdapter(ViewProfile.this, mUploads);
+                mRecycleView.setAdapter(mAdapter);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Toast.makeText(ViewProfile.this, databaseError.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void get_activities() {

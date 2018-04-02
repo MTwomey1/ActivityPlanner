@@ -60,17 +60,16 @@
     <Button
         android:id="@+id/btn_user_login_id"
         style="@style/Widget.AppCompat.Button.Colored"
-        android:layout_width="wrap_content"
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginTop="144dp"
+        android:layout_marginTop="68dp"
         android:background="@drawable/roundedbutton"
         android:text="@string/login_string"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/et_password_login_id"
-        app:layout_constraintVertical_bias="0.178" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/et_password_login_id" />
 
     <ProgressBar
         android:id="@+id/progressBar2"

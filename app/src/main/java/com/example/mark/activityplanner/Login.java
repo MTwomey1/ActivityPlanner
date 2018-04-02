@@ -8,6 +8,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -42,6 +43,30 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
         progressBar = findViewById(R.id.progressBar2);
 
         btn_login.setOnClickListener(this);
+        et_password_login.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View view, int keyCode, KeyEvent event) {
+                if (event.getAction() == KeyEvent.ACTION_DOWN)
+                {
+                    switch (keyCode)
+                    {
+                        case KeyEvent.KEYCODE_DPAD_CENTER:
+                        case KeyEvent.KEYCODE_ENTER:
+                            String username = et_username_login.getText().toString();
+                            String password = et_password_login.getText().toString();
+                            f_password = password;
+
+                            User user = new User(username, password);
+
+                            authenticate(user);
+                            return true;
+                        default:
+                            break;
+                    }
+                }
+                return false;
+            }
+        });
 
     }
 
