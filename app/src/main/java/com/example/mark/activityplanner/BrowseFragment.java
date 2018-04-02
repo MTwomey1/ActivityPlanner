@@ -124,7 +124,9 @@ public class BrowseFragment extends Fragment implements View.OnClickListener, Se
 
         for (int i = 0; i < friendslist.size(); i++) {
             String name1 = friendslist.get(i);
-            adapter2.add(name1);
+            if(!name1.equals(username)) {
+                adapter2.add(name1);
+            }
         }
     }
 
