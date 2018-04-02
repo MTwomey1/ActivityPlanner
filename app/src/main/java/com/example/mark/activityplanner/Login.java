@@ -26,7 +26,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
 
     EditText et_username_login, et_password_login;
     Button btn_login;
-    String f_password;
+    private String f_password;
     private FirebaseAuth mAuth;
     ProgressBar progressBar;
 
@@ -89,7 +89,6 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                         JSONObject jObject = new JSONObject(returned_string);
 
                         String username = jObject.getString("username");
-                        //String password = jObject.getString("password");
                         String email = jObject.getString("email");
                         String firstname = jObject.getString("firstname");
                         String lastname = jObject.getString("lastname");
@@ -105,7 +104,6 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                         editor.putString("firstname", firstname);
                         editor.putString("lastname", lastname);
                         editor.putString("email", email);
-                        editor.putString("f_password", f_password);
                         editor.putBoolean("IS_LOGIN", true);
                         editor.apply();
 

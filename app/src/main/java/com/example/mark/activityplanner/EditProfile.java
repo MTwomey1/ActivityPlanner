@@ -32,6 +32,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.CenterCrop;
+import com.bumptech.glide.load.resource.bitmap.CenterInside;
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.mark.activityplanner.network.RetrofitRequest;
 import com.example.mark.activityplanner.utils.Activity;
 import com.example.mark.activityplanner.utils.Upload;
@@ -89,8 +93,8 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
     String[] items = {"Airsoft", "American Football", "Archery", "Badminton", "Baseball", "Basketball", "BMX", "Boxing", "Canoe / Kayak", "Climbing", "Cricket", "Curling", "Cycling", "Darts", "Diving", "Dodgeball", "Equestrian", "Fencing", "GAA", "Golf", "Gymnastics", "Handball", "Hiking", "Hockey", "Hurling", "Judo", "Karate", "Motocross", "Mountain Biking", "Mountain Boarding", "Netball", "Paintball", "Rollerblading", "Rowing", "Rugby", "Running", "Sailing", "Scootering", "Shooting", "Skateboarding", "Skiing", "Snooker", "Snowboarding", "Soccer / Football", "Swimming", "Surfing", "Squash", "Table Tennis", "Taekwondo", "Tennis", "Track & Field", "Triathlon", "Ultimate Frisbee", "Unicycling", "Volleyball", "Wakeboarding", "Walking", "Water Polo", "Weightlifting", "Wind Surfing", "Wrestling"};
     private String profilePrefString;
     private String imageURL;
-    private  StorageReference mStorageRef;
-    private DatabaseReference mDatabaseRef;
+    private  StorageReference mStorageRef, mStorageRef2;
+    private DatabaseReference mDatabaseRef, mDatabaseRef2;
     private StorageTask mUploadTask;
     private Uri mImageUri;
     private Switch aSwitch;
@@ -113,6 +117,8 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
 
         mStorageRef = FirebaseStorage.getInstance().getReference("users/"+username+"/images");
         mDatabaseRef = FirebaseDatabase.getInstance().getReference("users/"+username+"/images");
+        mStorageRef2 = FirebaseStorage.getInstance().getReference("users/"+username+"/profileImages");
+        mDatabaseRef2 = FirebaseDatabase.getInstance().getReference("users/"+username+"/profileImages");
 
         btn_update = findViewById(R.id.btn_update_id);
         btn_save = findViewById(R.id.btn_save_id);
@@ -180,8 +186,11 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
 
     private void get_firebase_image() {
 
+        RequestOptions requestOptions = new RequestOptions();
+        requestOptions = requestOptions.transforms(new RoundedCorners(16));
         Glide.with(this)
                 .load(imageURL)
+                .apply(requestOptions)
                 .into(imageView);
 
     }
@@ -233,7 +242,14 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
                 break;
             }
             case R.id.btn_save_id: {
-                saveUserInformation();
+                //saveUserInformation();
+                //uploadImageToFirebaseStorage();
+                if(mUploadTask != null && mUploadTask.isInProgress()){
+                    Toast.makeText(EditProfile.this, "Upload in progress", Toast.LENGTH_SHORT).show();
+                }else {
+                    mProgressbar6.setVisibility(View.VISIBLE);
+                    saveUserInformation();
+                }
 
                 break;
             }
@@ -274,7 +290,6 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
                     if(mUploadTask != null && mUploadTask.isInProgress()){
                         Toast.makeText(EditProfile.this, "Upload in progress", Toast.LENGTH_SHORT).show();
                     }else {
-                        mProgressbar6.setVisibility(View.VISIBLE);
                         uploadFile();
                     }
                 }
@@ -292,6 +307,7 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
 
     private void uploadFile() {
         if(mImageUri != null){
+            mProgressbar6.setVisibility(View.VISIBLE);
             StorageReference fileReference = mStorageRef.child(System.currentTimeMillis() + "." + getFileExtension(mImageUri));
 
             mUploadTask = fileReference.putFile(mImageUri)
@@ -311,6 +327,9 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
                             Upload upload = new Upload(et_imageName.getText().toString().trim(), taskSnapshot.getDownloadUrl().toString());
                             String uploadId = mDatabaseRef.push().getKey();
                             mDatabaseRef.child(uploadId).setValue(upload);
+                            iv_gallery.setImageResource(R.drawable.ic_tick);
+                            et_imageName.setText("");
+                            mImageUri = null;
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {
@@ -333,28 +352,48 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
 
     private void saveUserInformation() {
 
-        FirebaseUser user = mAuth.getCurrentUser();
+        if(uriProfileImage != null){
+            StorageReference fileReference = mStorageRef2.child(System.currentTimeMillis() + "." + getFileExtension(uriProfileImage));
 
-        if(user != null && profileImageUrl != null){
-            UserProfileChangeRequest profile = new UserProfileChangeRequest.Builder()
-                    .setPhotoUri(Uri.parse(profileImageUrl))
-                    .build();
-
-            user.updateProfile(profile)
-                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+            mUploadTask = fileReference.putFile(uriProfileImage)
+                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            if(task.isSuccessful()){
-                                Toast.makeText(EditProfile.this, "Profile Updated", Toast.LENGTH_SHORT).show();
-                                mProgressbar6.setVisibility(View.GONE);
-                                if(chooser == 0){
-                                    editor.putString("profileImage", profileImageUrl);
-                                    editor.apply();
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            Handler handler = new Handler();
+                            handler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    mProgressbar6.setProgress(0);
                                 }
-                            }
+                            }, 500);
+                            String empty = "";
+                            mProgressbar6.setVisibility(View.GONE);
+                            Toast.makeText(EditProfile.this, "Upload Scucessful", Toast.LENGTH_LONG).show();
+                            Upload upload = new Upload(empty, taskSnapshot.getDownloadUrl().toString());
+                            String uploadId = mDatabaseRef2.push().getKey();
+                            mDatabaseRef2.child(uploadId).setValue(upload);
+
+                            editor.putString("profileImage", taskSnapshot.getDownloadUrl().toString());
+                            editor.apply();
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(EditProfile.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    })
+                    .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                            double progress = (100.0 * taskSnapshot.getBytesTransferred() / taskSnapshot.getTotalByteCount());
+                            mProgressbar6.setProgress((int) progress);
                         }
                     });
+        }else{
+            Toast.makeText(this, "No file selected", Toast.LENGTH_SHORT).show();
         }
+
     }
 
     private void add_activities(Activity activity) {
@@ -411,7 +450,7 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
                 else{
                     iv_gallery.setImageBitmap(bitmap);
                 }
-                uploadImageToFirebaseStorage();
+                //uploadImageToFirebaseStorage();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -424,12 +463,11 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
         }
     }
 
-    private void uploadImageToFirebaseStorage() {
-        String email = sharedPref.getString("email","");
+   /* private void uploadImageToFirebaseStorage() {
         StorageReference profileImageRef;
         DatabaseReference databaseRef;
         if (chooser == 0) {
-            profileImageRef = FirebaseStorage.getInstance().getReference("users/"+email+"/profilepics/"+System.currentTimeMillis() + ".jpg");
+            profileImageRef = FirebaseStorage.getInstance().getReference("users/"+username+"/profileImages/"+System.currentTimeMillis() + ".jpg");
         }
         else{
             String displayName = et_imageName.getText().toString();
@@ -438,8 +476,8 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
                 et_imageName.requestFocus();
                 return;
             }
-            profileImageRef = FirebaseStorage.getInstance().getReference("users/"+email+"/images/"+displayName+ ".jpg");
-            databaseRef = FirebaseDatabase.getInstance().getReference("users/"+email+"/images/"+displayName+ ".jpg");
+            //profileImageRef = FirebaseStorage.getInstance().getReference("users/"+email+"/images/"+displayName+ ".jpg");
+            //databaseRef = FirebaseDatabase.getInstance().getReference("users/"+email+"/images/"+displayName+ ".jpg");
         }
 
         if(uriProfileImage != null){
@@ -464,7 +502,7 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
                 }
             });
         }
-    }
+    }*/
 
     private void showImageChooser(int i){
         Intent intent = new Intent();

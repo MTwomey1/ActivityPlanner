@@ -6,12 +6,9 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -19,7 +16,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -29,17 +25,19 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
+import com.bumptech.glide.load.resource.bitmap.CenterInside;
+import com.bumptech.glide.load.resource.bitmap.FitCenter;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.mark.activityplanner.network.RetrofitRequest;
 import com.example.mark.activityplanner.utils.Friends;
 import com.example.mark.activityplanner.utils.Upload;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -76,9 +74,11 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     private FirebaseAuth mAuth;
     ImageView image_profile;
     private String profileImage;
+    private SharedPreferences sharedPref;
+    SharedPreferences.Editor editor;
 
-    private DatabaseReference mDatabaseRef;
-    private List<Upload> mUploads;
+    private DatabaseReference mDatabaseRef, mDatabaseRef2;
+    private List<Upload> mUploads, mUploads2;
 
 
     public ProfileFragment() {
@@ -103,16 +103,17 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         mProgressbar = view.findViewById(R.id.progress);
         image_profile = view.findViewById(R.id.image_profile_id);
 
-        SharedPreferences sharedPref = this.getActivity().getSharedPreferences("userInfo", Context.MODE_PRIVATE);
+        sharedPref = this.getActivity().getSharedPreferences("userInfo", Context.MODE_PRIVATE);
+        editor = sharedPref.edit();
+
         String firstname = sharedPref.getString("firstname","");
         String lastname = sharedPref.getString("lastname","");
         String username = sharedPref.getString("username","");
         String email = sharedPref.getString("email","");
-        String password = sharedPref.getString("f_password","");
-        profileImage = sharedPref.getString("profileImage", "");
         tv_fullname.setText(firstname + " " + lastname);
 
         mDatabaseRef = FirebaseDatabase.getInstance().getReference("users/"+username+"/images");
+        mDatabaseRef2 = FirebaseDatabase.getInstance().getReference("users/"+username);
 
         if(sharedPref.contains("Activities")) {
             Set<String> set = sharedPref.getStringSet("Activities", null);
@@ -126,14 +127,23 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
             });
 
             tv_activities.setText(sample.toString().replace("[", "").replace("]",""));
-        }
-        if (AppStatus.getInstance(this.getActivity()).isOnline()) {
+        }else{
             getActivities(username);
-            getProfileImage(email, password);
-            getImages(email);
+        }
+
+        if(sharedPref.contains("profileImage")){
+            profileImage = sharedPref.getString("profileImage","");
+            setProfileImage();
+        }
+        else{
+            getProfileImage();
+        }
+
+        if (!AppStatus.getInstance(this.getActivity()).isOnline()) {
+            Toast.makeText(this.getActivity().getApplicationContext(),"You are offline", Toast.LENGTH_LONG).show();
         }
         else {
-            Toast.makeText(this.getActivity().getApplicationContext(),"You are offline", Toast.LENGTH_LONG).show();
+            getImages(email);
         }
 
         mUploads = new ArrayList<>();
@@ -174,21 +184,51 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         return view;
     }
 
+    private void getProfileImage() {
+
+        Query lastQuery = mDatabaseRef2.child("profileImages").orderByKey().limitToLast(1);
+        lastQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot child: dataSnapshot.getChildren()) {
+                    String fUrl = child.child("imageUrl").getValue().toString();
+                    setProfileImage2(fUrl);
+                    editor.putString("profileImage", fUrl);
+                    editor.apply();
+
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.e("TAG", "Failed to read app title value.", databaseError.toException());
+            }
+        });
+    }
+
     private void getImages(String email) {
 
     }
 
-    private void getProfileImage(String email, String password) {
-        FirebaseUser user = mAuth.getCurrentUser();
+    private void setProfileImage2(String s) {
 
-        if(profileImage != null) {
-            RequestOptions requestOptions = new RequestOptions();
-            requestOptions = requestOptions.transforms(new CenterCrop(), new RoundedCorners(16));
-                Glide.with(this)
-                        .load(profileImage)
-                        .apply(requestOptions)
-                        .into(image_profile);
-            }
+        RequestOptions requestOptions = new RequestOptions();
+        requestOptions = requestOptions.transforms(new RoundedCorners(16));
+        Glide.with(this)
+                .load(s)
+                .apply(requestOptions)
+                .into(image_profile);
+    }
+
+    private void setProfileImage() {
+
+        RequestOptions requestOptions = new RequestOptions();
+        requestOptions = requestOptions.transforms(new RoundedCorners(16));
+            Glide.with(this)
+                    .load(profileImage)
+                    .apply(requestOptions)
+                    .into(image_profile);
     }
 
     private void getActivities(String username) {
@@ -279,10 +319,12 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                                 public void onClick(DialogInterface dialogInterface, int i) {
                                     SharedPreferences sharedPref = getActivity().getSharedPreferences("userInfo", Context.MODE_PRIVATE);
                                     SharedPreferences.Editor editor = sharedPref.edit();
-                                    editor.putBoolean("IS_LOGIN", false);
-                                    editor.apply();
-                                    Intent intent = new Intent(getActivity(), MainActivity.class);
+                                    //editor.putBoolean("IS_LOGIN", false);
+                                    //editor.apply();
                                     FirebaseAuth.getInstance().signOut();
+                                    editor.clear();
+                                    editor.commit();
+                                    Intent intent = new Intent(getActivity(), MainActivity.class);
                                     startActivity(intent);
                                     getActivity().finish();
 
