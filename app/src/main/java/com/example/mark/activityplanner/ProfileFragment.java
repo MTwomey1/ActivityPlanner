@@ -78,6 +78,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     SharedPreferences.Editor editor;
 
     private DatabaseReference mDatabaseRef, mDatabaseRef2;
+    private ValueEventListener listener;
     private List<Upload> mUploads, mUploads2;
 
 
@@ -162,7 +163,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         btn_manage.setOnClickListener(this);
         btn_friends.setOnClickListener(this);
 
-        mDatabaseRef.addValueEventListener(new ValueEventListener() {
+        listener = mDatabaseRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for(DataSnapshot postSnapshot : dataSnapshot.getChildren()){
@@ -195,9 +196,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                     setProfileImage2(fUrl);
                     editor.putString("profileImage", fUrl);
                     editor.apply();
-
                 }
-
             }
 
             @Override
@@ -321,12 +320,14 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                                     SharedPreferences.Editor editor = sharedPref.edit();
                                     //editor.putBoolean("IS_LOGIN", false);
                                     //editor.apply();
-                                    FirebaseAuth.getInstance().signOut();
                                     editor.clear();
                                     editor.commit();
+                                    mDatabaseRef.removeEventListener(listener);
+                                    FirebaseAuth.getInstance().signOut();
                                     Intent intent = new Intent(getActivity(), MainActivity.class);
                                     startActivity(intent);
                                     getActivity().finish();
+
 
                                 }
                             })
