@@ -71,6 +71,8 @@ public class CreatePlans extends AppCompatActivity implements View.OnClickListen
                     return lhs.compareTo(rhs);
                 }
             });
+            sample.add("Other");
+            //sample.
             adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, sample);
 
         }
@@ -88,6 +90,7 @@ public class CreatePlans extends AppCompatActivity implements View.OnClickListen
         month = month+1;
 
         tv_date.setText(day+"-"+month+"-"+year);
+        month = month -1;
         date = (year+"-"+month+"-"+day);
 
         tv_date.setOnClickListener(new View.OnClickListener() {
