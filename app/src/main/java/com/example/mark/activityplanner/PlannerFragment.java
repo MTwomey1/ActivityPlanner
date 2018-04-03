@@ -24,6 +24,7 @@ import org.json.JSONObject;
 
 import java.io.Serializable;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -42,6 +43,7 @@ public class PlannerFragment extends Fragment implements View.OnClickListener {
     Button btn_create_plans, btn_find_plans;
     String username;
     List<String> mArrayList = new ArrayList<>();
+    List<Plan> planList = new ArrayList<>();
     ProgressBar mProgressbar;
 
     public PlannerFragment() {
@@ -129,9 +131,21 @@ public class PlannerFragment extends Fragment implements View.OnClickListener {
 
                         String location = jObject.get("location"+i).toString();
                         Plan plan = new Plan(plan_id, username, activity, myDate, location);
-                        planAdapter.add(plan);
+                        planList.add(plan);
+                        //planAdapter.add(plan);
                     }
 
+                    Collections.sort(planList, new Comparator<Plan>() {
+                        SimpleDateFormat spf = new SimpleDateFormat("dd MMM, yyyy");
+
+                        @Override
+                        public int compare(Plan plan, Plan t1) {
+                            return plan.getFDate().compareTo(t1.getFDate());
+                        }
+                    });
+                    for(Plan p : planList){
+                        planAdapter.add(p);
+                    }
                 }catch (Exception e){
                     e.printStackTrace();
                 }

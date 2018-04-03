@@ -5,27 +5,27 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <TextView
-        android:layout_width="120dp"
-        android:layout_height="match_parent"
         android:id="@+id/tx_username"
-        android:textAppearance="?android:textAppearanceMedium"
-        />
-
-    <TextView
         android:layout_width="100dp"
         android:layout_height="match_parent"
-        android:id="@+id/tx_activity"
-        app:layout_constraintLeft_toRightOf="@+id/tx_username"
-        android:textAppearance="?android:textAppearanceMedium"
-        />
+        android:gravity="center_vertical"
+        android:textAppearance="?android:textAppearanceMedium" />
 
     <TextView
+        android:id="@+id/tx_activity"
+        android:layout_width="120dp"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical"
+        android:textAppearance="?android:textAppearanceMedium"
+        app:layout_constraintLeft_toRightOf="@+id/tx_username" />
+
+    <TextView
+        android:id="@+id/tx_date"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:id="@+id/tx_date"
-        app:layout_constraintLeft_toRightOf="@id/tx_activity"
+        android:gravity="center_vertical"
         android:textAppearance="?android:textAppearanceMedium"
-        />
+        app:layout_constraintLeft_toRightOf="@id/tx_activity" />
 
     <!--<TextView
         android:layout_width="wrap_content"
