@@ -15,4 +15,7 @@
     <color name="transparent">@android:color/transparent</color>
     <color name="orange">@android:color/holo_blue_light</color>
     <color name="background_tab_pressed">#6633B5E5</color>
+
+    <color name="List1">#66c1c7c9</color>
+    <color name="List2">#66c2eaf9</color>
 </resources>
