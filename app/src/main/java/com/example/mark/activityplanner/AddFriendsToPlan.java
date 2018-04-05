@@ -43,6 +43,7 @@ public class AddFriendsToPlan extends AppCompatActivity implements View.OnClickL
     Button btn_invite;
     Plan myPlan;
     String plan_id;
+    ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +51,7 @@ public class AddFriendsToPlan extends AppCompatActivity implements View.OnClickL
         setContentView(R.layout.activity_add_friends_to_plan);
 
         mSubscriptions = new CompositeSubscription();
+        progressBar = findViewById(R.id.progressBar5);
         SharedPreferences sharedPref = getSharedPreferences("userInfo", Context.MODE_PRIVATE);
         String username = sharedPref.getString("username", null);
 
@@ -69,6 +71,7 @@ public class AddFriendsToPlan extends AppCompatActivity implements View.OnClickL
     }
 
     private void get_friends(String username) {
+        progressBar.setVisibility(View.VISIBLE);
         User user = new User(username);
 
         mSubscriptions.add(RetrofitRequest.getRetrofit().getFriends(user)
@@ -78,6 +81,7 @@ public class AddFriendsToPlan extends AppCompatActivity implements View.OnClickL
     }
 
     private void handleGetResponse(Friends friends) {
+        progressBar.setVisibility(View.GONE);
         listview = findViewById(R.id.check_list);
         listview.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.rowlayout, R.id.txt_lan);
@@ -104,6 +108,7 @@ public class AddFriendsToPlan extends AppCompatActivity implements View.OnClickL
     }
 
     private void handleError(Throwable error) {
+        progressBar.setVisibility(View.GONE);
 
         if (error instanceof HttpException) {
 

@@ -1,6 +1,10 @@
 package com.example.mark.activityplanner;
 
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,6 +14,8 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.mark.activityplanner.utils.Globals;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -26,6 +32,9 @@ public class ViewPlan extends AppCompatActivity implements View.OnClickListener 
     ImageButton btn_people;
     Plan myPlan;
     Button btn_chat;
+    private ImageButton btn_delete, btn_archive;
+    private String plan_id;
+    Globals g = Globals.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +49,8 @@ public class ViewPlan extends AppCompatActivity implements View.OnClickListener 
         tv_invited = findViewById(R.id.tv_invited_id);
         tv_accepted = findViewById(R.id.tv_accepted_id);
         btn_chat = findViewById(R.id.btn_chat_id);
+        btn_delete = findViewById(R.id.btn_delete_id);
+        btn_archive = findViewById(R.id.btn_archive_id);
 
         Bundle bundle = getIntent().getExtras();
         String planStr = bundle.getString("Plan");
@@ -47,17 +58,22 @@ public class ViewPlan extends AppCompatActivity implements View.OnClickListener 
         Type type = new TypeToken<Plan>(){
         }.getType();
         myPlan = gson.fromJson(planStr, type);
+        Date date = myPlan.getFDate();
+        SimpleDateFormat spf = new SimpleDateFormat("EEEE, dd MMMM yyyy");
+        String dateStr = spf.format(date);
 
-        tv_plan_creator.setText(myPlan.getUsername());
+        tv_plan_creator.setText("Creator: "+myPlan.getUsername());
         tv_plan_activity.setText(myPlan.getActivity());
-        tv_plan_when.setText(myPlan.getDate());
-        tv_plan_where.setText(myPlan.getLocation());
-        String plan_id = myPlan.getPlan_id();
+        tv_plan_when.setText(dateStr);
+        tv_plan_where.setText("Location: "+myPlan.getLocation());
+        plan_id = myPlan.getPlan_id();
 
         get_plan_users(plan_id);
 
         btn_people.setOnClickListener(this);
         btn_chat.setOnClickListener(this);
+        btn_delete.setOnClickListener(this);
+        btn_archive.setOnClickListener(this);
     }
 
     @Override
@@ -135,6 +151,68 @@ public class ViewPlan extends AppCompatActivity implements View.OnClickListener 
                 break;
             }
 
+            case R.id.btn_archive_id:{
+                AlertDialog.Builder altdial = new AlertDialog.Builder(ViewPlan.this);
+                altdial.setMessage("Are you sure you want to save plan to archive?").setCancelable(false)
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+
+                            }
+                        })
+                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.cancel();
+                            }
+                        });
+                AlertDialog alert = altdial.create();
+                alert.setTitle("Archive Plan");
+                alert.show();
+
+                break;
+            }
+
+            case R.id.btn_delete_id:{
+                AlertDialog.Builder altdial = new AlertDialog.Builder(ViewPlan.this);
+                altdial.setMessage("Are you sure you want to delete this plan?").setCancelable(false)
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                delete_plan(plan_id);
+                            }
+                        })
+                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.cancel();
+                            }
+                        });
+                AlertDialog alert = altdial.create();
+                alert.setTitle("Delete Plan");
+                alert.show();
+
+                break;
+            }
+
         }
+    }
+
+    private void delete_plan(String plan_id) {
+        ServerRequests serverRequests = new ServerRequests(this);
+        serverRequests.deletePlan(plan_id, new Get_String_Callback() {
+            @Override
+            public void done(String returned_string) {
+                if(returned_string.equals("Successful")){
+                    Toast.makeText(ViewPlan.this,"Plan Deleted", Toast.LENGTH_LONG).show();
+                    finish();
+                    Intent refreshIntent = new Intent(ViewPlan.this, UserHome.class);
+                    g.setTest(1);
+                    startActivity(refreshIntent);
+                }else{
+                    Toast.makeText(ViewPlan.this,"Error", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
     }
 }

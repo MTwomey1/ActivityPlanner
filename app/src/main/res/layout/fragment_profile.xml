@@ -128,11 +128,12 @@
 
         <Button
             android:id="@+id/btn_friends_id"
+            style="@style/Widget.AppCompat.Button.Colored"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="40dp"
             android:layout_marginTop="100dp"
-            android:background="@drawable/roundedbutton2"
+            android:background="@drawable/roundedbutton"
             android:text="@string/friends_string"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

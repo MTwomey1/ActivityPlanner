@@ -338,7 +338,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                                 }
                             });
                     AlertDialog alert = altdial.create();
-                    alert.setTitle("Alert!");
+                    alert.setTitle("Logout");
                     alert.show();
 
                     break;

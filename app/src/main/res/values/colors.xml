@@ -3,7 +3,7 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
-    <color name="foreground_material_light_1">#049e49</color>
+    <color name="foreground_material_light_1">#7505fd74</color>
     <color name="actionBarColor">#d60d7e5d</color>
     <color name="actionBarColor2">#9e0d7e5d</color>
     <color name="white">#ffffff</color>
@@ -18,4 +18,6 @@
 
     <color name="List1">#66c1c7c9</color>
     <color name="List2">#66c2eaf9</color>
+    <color name="mgreen">#3e07be37</color>
+    <color name="mred">#23b10914</color>
 </resources>
