@@ -35,6 +35,8 @@ public class ViewPlan extends AppCompatActivity implements View.OnClickListener 
     private ImageButton btn_delete, btn_archive;
     private String plan_id;
     Globals g = Globals.getInstance();
+    private SharedPreferences sharedPref;
+    private String mUsername;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +63,14 @@ public class ViewPlan extends AppCompatActivity implements View.OnClickListener 
         Date date = myPlan.getFDate();
         SimpleDateFormat spf = new SimpleDateFormat("EEEE, dd MMMM yyyy");
         String dateStr = spf.format(date);
+
+        sharedPref = this.getSharedPreferences("userInfo", Context.MODE_PRIVATE);
+        mUsername = sharedPref.getString("username", "");
+
+        if(!mUsername.equals(myPlan.getUsername())){
+            btn_delete.setVisibility(View.GONE);
+            btn_archive.setVisibility(View.GONE);
+        }
 
         tv_plan_creator.setText("Creator: "+myPlan.getUsername());
         tv_plan_activity.setText(myPlan.getActivity());
