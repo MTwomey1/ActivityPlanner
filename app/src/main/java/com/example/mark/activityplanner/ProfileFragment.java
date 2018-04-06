@@ -68,7 +68,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     private ArrayList<String> mDataset;
     private ImageButton btn_logout;
     private ImageButton btn_manage;
-    private Button btn_friends;
+    private Button btn_friends, btn_archive;
     private CompositeSubscription mSubscriptions;
     private ProgressBar mProgressbar;
     FirebaseAuth mAuth;
@@ -103,6 +103,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         btn_friends = view.findViewById(R.id.btn_friends_id);
         mProgressbar = view.findViewById(R.id.progress);
         image_profile = view.findViewById(R.id.image_profile_id);
+        btn_archive = view.findViewById(R.id.btn_archive_id);
 
         sharedPref = this.getActivity().getSharedPreferences("userInfo", Context.MODE_PRIVATE);
         editor = sharedPref.edit();
@@ -162,6 +163,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         btn_logout.setOnClickListener(this);
         btn_manage.setOnClickListener(this);
         btn_friends.setOnClickListener(this);
+        btn_archive.setOnClickListener(this);
 
         mDatabaseRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -358,6 +360,18 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                     if (AppStatus.getInstance(this.getActivity()).isOnline()) {
                         Intent friendsIntent = new Intent(getActivity(), ViewFriends.class);
                         startActivity(friendsIntent);
+                    }
+                    else {
+                        Toast.makeText(this.getActivity().getApplicationContext(),"You are offline", Toast.LENGTH_LONG).show();
+                    }
+
+                    break;
+                }
+
+                case R.id.btn_archive_id: {
+                    if (AppStatus.getInstance(this.getActivity()).isOnline()) {
+                        Intent archiveIntent = new Intent(getActivity(), Archive.class);
+                        startActivity(archiveIntent);
                     }
                     else {
                         Toast.makeText(this.getActivity().getApplicationContext(),"You are offline", Toast.LENGTH_LONG).show();

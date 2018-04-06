@@ -153,11 +153,11 @@ public class ViewPlan extends AppCompatActivity implements View.OnClickListener 
 
             case R.id.btn_archive_id:{
                 AlertDialog.Builder altdial = new AlertDialog.Builder(ViewPlan.this);
-                altdial.setMessage("Are you sure you want to save plan to archive?").setCancelable(false)
+                altdial.setMessage("Are you sure you want to save this plan to archive?").setCancelable(false)
                         .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-
+                                archive_plan(plan_id);
                             }
                         })
                         .setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -196,6 +196,24 @@ public class ViewPlan extends AppCompatActivity implements View.OnClickListener 
             }
 
         }
+    }
+
+    private void archive_plan(String plan_id) {
+        ServerRequests serverRequests = new ServerRequests(this);
+        serverRequests.archivePlan(plan_id, new Get_String_Callback() {
+            @Override
+            public void done(String returned_string) {
+                if(returned_string.equals("Successful")){
+                    Toast.makeText(ViewPlan.this,"Plan Archived", Toast.LENGTH_LONG).show();
+                    finish();
+                    Intent refreshIntent = new Intent(ViewPlan.this, UserHome.class);
+                    g.setTest(1);
+                    startActivity(refreshIntent);
+                }else{
+                    Toast.makeText(ViewPlan.this,"Error", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
     }
 
     private void delete_plan(String plan_id) {
