@@ -102,36 +102,36 @@ public class ViewPlan extends AppCompatActivity implements View.OnClickListener 
             public void done(String returned_string) {
                 try{
                     JSONObject jObject = new JSONObject(returned_string);
+                    Log.d("moopr", String.valueOf(jObject));
+
 
                     for (int i = 0; i < jObject.length(); i++){
                         String username  = jObject.get("username"+i).toString();
                         String status  = jObject.get("status"+i).toString();
 
                         if(status.equals("null")){
-                            tv_invited.append(username+", ");
+                            tv_invited.append(username);
+
+                            if(i <  jObject.length()/2 - 1){
+                                tv_invited.append(", ");
+                            }
+
                         }
                         else{
-                            tv_accepted.append(username+", ");
+                            tv_accepted.append(username);
+
+                            if(i <  jObject.length()/2 - 1){
+                                tv_accepted.append(", ");
+                            }
                         }
+
                     }
-                    fix_views();
 
                 }catch (Exception e){
                     e.printStackTrace();
                 }
             }
         });
-    }
-
-    private void fix_views() {
-        String tv_inv = tv_invited.getText().toString();
-        tv_inv = tv_inv.substring(0, tv_inv.length() - 2);
-        tv_invited.setText(tv_inv);
-
-        String tv_acc = tv_accepted.getText().toString();
-        tv_acc = tv_acc.substring(0, tv_acc.length() - 2);
-        tv_accepted.setText(tv_acc);
-        Log.d("myTo", tv_acc);
     }
 
     @Override
