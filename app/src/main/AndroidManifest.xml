@@ -23,44 +23,45 @@
         </activity>
         <activity
             android:name=".Register"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".Login"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".UserHome"
             android:label="@string/title_activity_user_home"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustPan"></activity>
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".CreatePlans"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".EditProfile"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".ViewPlan"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".ViewProfile"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".ViewFriends"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".AddFriendsToPlan"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".FindPlans"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".ChatRoom"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".Chat"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden|adjustResize"></activity>
-        <activity android:name=".Archive"></activity>
+            android:windowSoftInputMode="stateHidden|adjustResize" />
+        <activity android:name=".Archive" />
+        <activity android:name=".ImageActivity"></activity>
     </application>
 
 </manifest>

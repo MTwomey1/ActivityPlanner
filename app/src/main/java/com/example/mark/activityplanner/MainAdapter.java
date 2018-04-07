@@ -1,6 +1,7 @@
 package com.example.mark.activityplanner;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -55,8 +56,18 @@ class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
                 .apply(requestOptions)
                 .apply(options)
                 .into(holder.mImageView);
+        holder.mImageView.setTag(uploadCurrent.getImageUrl());
 
        // holder.mImageView.setImageResource(R.drawable.placeholder);
+        holder.mImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Context context = view.getContext();
+                Intent picIntent = new Intent(context, ImageActivity.class);
+                picIntent.putExtra("imageUrl", holder.mImageView.getTag().toString());
+                context.startActivity(picIntent);
+            }
+        });
     }
 
     @Override
