@@ -16,15 +16,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignBottom="@+id/message_text"
-            android:layout_marginBottom="5dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginEnd="10dp"
-            android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginBottom="5dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginRight="10dp"
 
 
             android:src="@drawable/ic_single_tick"
-            android:visibility="visible" />
+            android:visibility="invisible" />
 
         <TextView
             android:id="@+id/time_text"
@@ -39,7 +39,7 @@
             android:layout_marginEnd="2dp"
             android:layout_toLeftOf="@id/user_reply_status"
             android:layout_toStartOf="@id/user_reply_status"
-            android:text="17:10" />
+            android:text="16:20" />
 
         <TextView
             android:id="@id/message_text"
@@ -50,7 +50,7 @@
             android:layout_toLeftOf="@id/time_text"
 
             android:autoLink="web"
-            android:text="Rahul Agrawal is a good boy but he does not know what he wants." />
+            android:text="Testing chat testing" />
 
 
 

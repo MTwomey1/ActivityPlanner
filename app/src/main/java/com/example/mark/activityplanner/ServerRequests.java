@@ -169,13 +169,14 @@ public class ServerRequests {
 
     }
 
-    public void create_plan(String username, String activity, String date, String location, Get_String_Callback string_callback){
+    public void create_plan(String username, String activity, String date, String location, String choice, Get_String_Callback string_callback){
 
         Map<String, String> data_to_send = new HashMap<>();
         data_to_send.put("username", username);
         data_to_send.put("activity", activity);
         data_to_send.put("date", date);
         data_to_send.put("location", location);
+        data_to_send.put("choice", choice);
 
         // show progress
         progressDialog.show();

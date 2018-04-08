@@ -32,20 +32,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.bitmap.CenterCrop;
-import com.bumptech.glide.load.resource.bitmap.CenterInside;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.mark.activityplanner.network.RetrofitRequest;
 import com.example.mark.activityplanner.utils.Activity;
 import com.example.mark.activityplanner.utils.Upload;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
@@ -129,8 +123,8 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
         mProgressbar6 = findViewById(R.id.progressBar6);
         imageView = findViewById(R.id.image_choose_id);
         iv_gallery = findViewById(R.id.iv_gallery_id);
-        aSwitch = findViewById(R.id.switch1);
-        tv_switch = findViewById(R.id.tv_switch_id);
+        aSwitch = findViewById(R.id.switch2);
+        tv_switch = findViewById(R.id.tv_switch2_id);
 
         btn_update.setOnClickListener(this);
         btn_save.setOnClickListener(this);

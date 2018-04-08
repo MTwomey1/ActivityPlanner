@@ -40,7 +40,7 @@
 
                 android:autoLink="web"
                 android:maxWidth="280dp"
-                android:text="Rahul Agrawal is a good boy but he does not know what he wants." />
+                android:text="Testing chat testing" />
 
         </LinearLayout>
 
@@ -55,7 +55,7 @@
             android:textColor="@color/gray"
             android:paddingBottom="5dp"
             android:layout_toRightOf="@id/chat_company_reply_text"
-            android:text="17:10" />
+            android:text="16:20" />
 
     </RelativeLayout>
 

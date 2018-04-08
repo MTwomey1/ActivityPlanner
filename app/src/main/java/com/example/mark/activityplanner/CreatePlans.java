@@ -12,9 +12,11 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import com.example.mark.activityplanner.utils.Activity;
@@ -32,7 +34,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class CreatePlans extends AppCompatActivity implements View.OnClickListener {
+public class CreatePlans extends AppCompatActivity implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
 
     Globals g = Globals.getInstance();
 
@@ -46,6 +48,9 @@ public class CreatePlans extends AppCompatActivity implements View.OnClickListen
     EditText et_location;
     String username, date;
     private DatabaseReference root = FirebaseDatabase.getInstance().getReference().getRoot();
+    private Switch mSwitch;
+    private TextView tv_switch;
+    private int choice = 1;
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
@@ -60,6 +65,8 @@ public class CreatePlans extends AppCompatActivity implements View.OnClickListen
         tv_date = findViewById(R.id.date_id);
         btn_create = findViewById(R.id.btn_create_id);
         et_location = findViewById(R.id.et_location_id);
+        mSwitch = findViewById(R.id.switch2);
+        tv_switch = findViewById(R.id.tv_switch2_id);
 
         if(sharedPref.contains("Activities")) {
             Log.d("myTag", "Trying");
@@ -109,6 +116,7 @@ public class CreatePlans extends AppCompatActivity implements View.OnClickListen
         });
 
         btn_create.setOnClickListener(this);
+        mSwitch.setOnCheckedChangeListener(this);
     }
 
     @Override
@@ -124,18 +132,21 @@ public class CreatePlans extends AppCompatActivity implements View.OnClickListen
                     return;
                 }
 
-                create_plan(username, activity, date, location);
+                String str_choice = String.valueOf(choice);
+
+                create_plan(username, activity, date, location, str_choice);
 
                 break;
             }
         }
     }
 
-    private void create_plan(String username, String activity, String date, String location) {
+    private void create_plan(String username, String activity, String date, String location, String choice) {
         ServerRequests server_requests = new ServerRequests(this);
-        server_requests.create_plan(username, activity, date, location, new Get_String_Callback() {
+        server_requests.create_plan(username, activity, date, location, choice, new Get_String_Callback() {
             @Override
             public void done(String returned_string) {
+                Log.d("moopr", returned_string);
                 createChat(returned_string);
                 g.setTest(1);
                 setResult(10001);
@@ -154,6 +165,18 @@ public class CreatePlans extends AppCompatActivity implements View.OnClickListen
     // check if editText is empty
     static private boolean isEmpty(String text) {
         return (text.trim().length() > 0);
+    }
+
+    @Override
+    public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+        if(mSwitch.isChecked()){
+            tv_switch.setText("Plan Currently Public");
+            choice = 1;
+            
+        }else{
+            tv_switch.setText("Plan Currently Private");
+            choice = 2;
+        }
     }
 
 }
