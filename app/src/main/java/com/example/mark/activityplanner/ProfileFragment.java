@@ -153,6 +153,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         //}
 
         mRecycleView = view.findViewById(R.id.recyclerView);
+        mRecycleView.setNestedScrollingEnabled(false);
         mRecycleView.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
         mRecycleView.setLayoutManager(mLayoutManager);
