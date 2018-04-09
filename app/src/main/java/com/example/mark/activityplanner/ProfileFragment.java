@@ -24,9 +24,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.bitmap.CenterCrop;
-import com.bumptech.glide.load.resource.bitmap.CenterInside;
-import com.bumptech.glide.load.resource.bitmap.FitCenter;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.mark.activityplanner.network.RetrofitRequest;
@@ -61,13 +58,13 @@ import rx.subscriptions.CompositeSubscription;
  */
 public class ProfileFragment extends Fragment implements View.OnClickListener {
 
-    TextView tv_fullname, tv_activities;
+    TextView tv_fullname, tv_activities, tv_message;
     private RecyclerView mRecycleView;
     private RecyclerView.LayoutManager mLayoutManager;
     private RecyclerView.Adapter mAdapter;
     private ArrayList<String> mDataset;
-    private ImageButton btn_logout;
-    private ImageButton btn_manage;
+    private Button btn_logout;
+    private Button btn_manage;
     private Button btn_friends, btn_archive;
     private CompositeSubscription mSubscriptions;
     private ProgressBar mProgressbar;
@@ -97,13 +94,14 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
 
 
         tv_fullname = view.findViewById(R.id.tv_fullname_id);
-        btn_logout = view.findViewById(R.id.imageButton_ID);
+        btn_logout = view.findViewById(R.id.btn_logout_id);
         btn_manage = view.findViewById(R.id.manage_btn_id);
         tv_activities = view.findViewById(R.id.tv_activities_id);
         btn_friends = view.findViewById(R.id.btn_friends_id);
         mProgressbar = view.findViewById(R.id.progress);
         image_profile = view.findViewById(R.id.image_profile_id);
         btn_archive = view.findViewById(R.id.btn_archive_id);
+        tv_message = view.findViewById(R.id.tv_message_id);
 
         sharedPref = this.getActivity().getSharedPreferences("userInfo", Context.MODE_PRIVATE);
         editor = sharedPref.edit();
@@ -119,16 +117,23 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
 
         if(sharedPref.contains("Activities")) {
             Set<String> set = sharedPref.getStringSet("Activities", null);
-            List<String> sample = new ArrayList<String>(set);
 
-            sample.sort(new Comparator<String>() {
-                @Override
-                public int compare(String lhs, String rhs) {
-                    return lhs.compareTo(rhs);
-                }
-            });
+            if(String.valueOf(set).equals("[]")){
+                tv_activities.setText("Click on Edit button below to add interests!");
+            }else {
+                List<String> sample = new ArrayList<String>(set);
 
-            tv_activities.setText(sample.toString().replace("[", "").replace("]",""));
+                sample.sort(new Comparator<String>() {
+                    @Override
+                    public int compare(String lhs, String rhs) {
+                        return lhs.compareTo(rhs);
+                    }
+                });
+
+                String check = sample.toString().replace("[", "").replace("]", "");
+                //if (check.equals(""))
+                tv_activities.setText(sample.toString().replace("[", "").replace("]", ""));
+            }
         }else{
             getActivities(username);
         }
@@ -141,12 +146,6 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
             getProfileImage();
         }
 
-        if (!AppStatus.getInstance(this.getActivity()).isOnline()) {
-            Toast.makeText(this.getActivity().getApplicationContext(),"You are offline", Toast.LENGTH_LONG).show();
-        }
-        else {
-            getImages(email);
-        }
 
         mUploads = new ArrayList<>();
         //for (int i = 1; i < 11; i++) {
@@ -168,6 +167,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         mDatabaseRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                tv_message.setVisibility(View.GONE);
                 for(DataSnapshot postSnapshot : dataSnapshot.getChildren()){
                     Upload upload = postSnapshot.getValue(Upload.class);
                     mUploads.add(upload);
@@ -208,9 +208,6 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         });
     }
 
-    private void getImages(String email) {
-
-    }
 
     private void setProfileImage2(String s) {
 
@@ -234,6 +231,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
 
     private void getActivities(String username) {
         User user = new User(username);
+        Log.d("Moopr","Poo haed");
 
         mProgressbar.setVisibility(View.VISIBLE);
 
@@ -264,7 +262,13 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                 return lhs.compareTo(rhs);
             }
         });
+
         tv_activities.setText(sample.toString().replace("[", "").replace("]",""));
+        Log.d("Moopr",tv_activities.getText().toString());
+        Log.d("Moopr","Poo haed");
+        if(tv_activities.getText().equals("")){
+            tv_activities.setText("Click on Edit button below to add interests!");
+        }
 
         //String tv_act = tv_activities.getText().toString();
         //tv_act = tv_act.substring(0, tv_act.length() - 2);
@@ -277,6 +281,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     }
 
     private void handleError(Throwable error) {
+        Log.d("Moopr","Poo haerd");
 
         mProgressbar.setVisibility(View.GONE);
         if (error instanceof HttpException) {
@@ -311,7 +316,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
 
         public void onClick(View view) {
             switch (view.getId()) {
-                case R.id.imageButton_ID: {
+                case R.id.btn_logout_id: {
 
                     AlertDialog.Builder altdial = new AlertDialog.Builder(ProfileFragment.this.getActivity());
                     altdial.setMessage("Are you sure you want to logout?").setCancelable(false)
