@@ -324,11 +324,11 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                                     //editor.apply();
                                     editor.clear();
                                     editor.commit();
+                                    FirebaseAuth.getInstance().signOut();
                                     //mDatabaseRef.removeEventListener(listener);
                                     Intent intent = new Intent(getActivity(), MainActivity.class);
-                                    startActivity(intent);
                                     getActivity().finish();
-                                    FirebaseAuth.getInstance().signOut();
+                                    startActivity(intent);
 
 
                                 }

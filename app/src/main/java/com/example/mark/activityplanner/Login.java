@@ -165,7 +165,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
         });
     }
 
-    @Override
+    /*@Override
     protected void onStart() {
         super.onStart();
 
@@ -173,7 +173,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
             finish();
             startActivity(new Intent(this, UserHome.class));
         }
-    }
+    }*/
 
     private void show_error_message(String error) {
         AlertDialog.Builder dialog_builder = new AlertDialog.Builder(Login.this);
