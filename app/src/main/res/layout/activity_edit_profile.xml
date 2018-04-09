@@ -29,12 +29,12 @@
     <ImageView
         android:id="@+id/image_choose_id"
         android:layout_width="130dp"
-        android:layout_height="98dp"
+        android:layout_height="100dp"
         android:layout_marginLeft="60dp"
         android:layout_marginTop="44dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView21"
-        app:srcCompat="@drawable/web_hi_res_512" />
+        app:srcCompat="@drawable/ic_action_name" />
 
     <View
         android:id="@+id/view1"
@@ -172,13 +172,13 @@
         android:id="@+id/iv_gallery_id"
         android:layout_width="130dp"
         android:layout_height="100dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginTop="16dp"
-        android:cropToPadding="false"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="12dp"
         android:scaleType="fitCenter"
-        app:layout_constraintEnd_toStartOf="@+id/btn_upload_id"
-        app:layout_constraintHorizontal_bias="0.48"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/image_choose_id"
+        app:layout_constraintHorizontal_bias="0.495"
+        app:layout_constraintStart_toStartOf="@+id/image_choose_id"
         app:layout_constraintTop_toBottomOf="@+id/textView36"
         app:srcCompat="@drawable/ic_action_name" />
 

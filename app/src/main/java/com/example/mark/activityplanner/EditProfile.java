@@ -135,7 +135,7 @@ public class EditProfile extends AppCompatActivity implements View.OnClickListen
         ibtn_upArrow.setOnClickListener(this);
         aSwitch.setOnCheckedChangeListener(this);
 
-        if(imageURL != null) {
+        if(!imageURL.equals("")) {
             get_firebase_image();
         }
 
