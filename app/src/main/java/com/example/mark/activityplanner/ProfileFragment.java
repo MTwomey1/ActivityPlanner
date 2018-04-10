@@ -73,6 +73,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     private String profileImage;
     private SharedPreferences sharedPref;
     SharedPreferences.Editor editor;
+    private ImageButton ib_right, ib_left;
 
     private DatabaseReference mDatabaseRef, mDatabaseRef2;
     private ValueEventListener listener;
@@ -102,6 +103,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         image_profile = view.findViewById(R.id.image_profile_id);
         btn_archive = view.findViewById(R.id.btn_archive_id);
         tv_message = view.findViewById(R.id.tv_message_id);
+        ib_right = view.findViewById(R.id.ib_right_arrow_id);
+        ib_left =view.findViewById(R.id.ib_left_arrow_id);
 
         sharedPref = this.getActivity().getSharedPreferences("userInfo", Context.MODE_PRIVATE);
         editor = sharedPref.edit();
@@ -164,6 +167,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         btn_manage.setOnClickListener(this);
         btn_friends.setOnClickListener(this);
         btn_archive.setOnClickListener(this);
+        ib_right.setOnClickListener(this);
+        ib_left.setOnClickListener(this);
 
         mDatabaseRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -176,6 +181,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
 
                 mAdapter = new MainAdapter(getActivity(), mUploads);
                 mRecycleView.setAdapter(mAdapter);
+
             }
 
             @Override
@@ -183,6 +189,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                 Toast.makeText(getActivity(), databaseError.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
+        //mRecycleView.setOnScrollChangeListener(this);
 
         // Inflate the layout for this fragment
         return view;
@@ -383,6 +390,16 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                         Toast.makeText(this.getActivity().getApplicationContext(),"You are offline", Toast.LENGTH_LONG).show();
                     }
 
+                    break;
+                }
+
+                case R.id.ib_right_arrow_id:{
+                    mRecycleView.smoothScrollToPosition(mAdapter.getItemCount()-1);
+                    break;
+                }
+
+                case R.id.ib_left_arrow_id:{
+                    mRecycleView.smoothScrollToPosition(0);
                     break;
                 }
             }
