@@ -406,4 +406,17 @@ public class ServerRequests {
         new connection(data_to_send, "GetArchive.php", string_callback).execute();
     }
 
+    public void leavePlan(String username, String planId, Get_String_Callback string_callback){
+        Map<String, String> data_to_send = new HashMap<>();
+
+        data_to_send.put("username", username);
+        data_to_send.put("planId", planId);
+
+        // show progress
+        progressDialog.show();
+
+        // send data to sever - the sever will echo back the results
+        new connection(data_to_send, "LeavePlan.php", string_callback).execute();
+    }
+
 }

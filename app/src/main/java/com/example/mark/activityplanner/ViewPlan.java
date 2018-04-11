@@ -32,7 +32,7 @@ public class ViewPlan extends AppCompatActivity implements View.OnClickListener 
     ImageButton btn_people;
     Plan myPlan;
     Button btn_chat;
-    private ImageButton btn_delete, btn_archive;
+    private ImageButton btn_delete, btn_archive, btn_unhappy;
     private String plan_id;
     Globals g = Globals.getInstance();
     private SharedPreferences sharedPref;
@@ -53,6 +53,7 @@ public class ViewPlan extends AppCompatActivity implements View.OnClickListener 
         btn_chat = findViewById(R.id.btn_chat_id);
         btn_delete = findViewById(R.id.btn_delete_id);
         btn_archive = findViewById(R.id.btn_archive_id);
+        btn_unhappy = findViewById(R.id.ibtn_unhappy_id);
 
         Bundle bundle = getIntent().getExtras();
         String planStr = bundle.getString("Plan");
@@ -71,6 +72,9 @@ public class ViewPlan extends AppCompatActivity implements View.OnClickListener 
             btn_delete.setVisibility(View.GONE);
             btn_archive.setVisibility(View.GONE);
         }
+        else{
+            btn_unhappy.setVisibility(View.GONE);
+        }
 
         tv_plan_creator.setText("Creator: "+myPlan.getUsername());
         tv_plan_activity.setText(myPlan.getActivity());
@@ -84,6 +88,7 @@ public class ViewPlan extends AppCompatActivity implements View.OnClickListener 
         btn_chat.setOnClickListener(this);
         btn_delete.setOnClickListener(this);
         btn_archive.setOnClickListener(this);
+        btn_unhappy.setOnClickListener(this);
     }
 
     @Override
@@ -205,7 +210,47 @@ public class ViewPlan extends AppCompatActivity implements View.OnClickListener 
                 break;
             }
 
+            case R.id.ibtn_unhappy_id:{
+                AlertDialog.Builder altdial = new AlertDialog.Builder(ViewPlan.this);
+                altdial.setMessage("Are you sure you want to leave this plan?").setCancelable(false)
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                leave_plan(plan_id);
+                            }
+                        })
+                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.cancel();
+                            }
+                        });
+                AlertDialog alert = altdial.create();
+                alert.setTitle("Leave Plan");
+                alert.show();
+
+                break;
+            }
+
         }
+    }
+
+    private void leave_plan(String plan_id) {
+        ServerRequests serverRequests = new ServerRequests(this);
+        serverRequests.leavePlan(mUsername, plan_id, new Get_String_Callback() {
+            @Override
+            public void done(String returned_string) {
+                if(returned_string.equals("Successful")){
+                    Toast.makeText(ViewPlan.this,"Plan Left", Toast.LENGTH_LONG).show();
+                    finish();
+                    Intent refreshIntent = new Intent(ViewPlan.this, UserHome.class);
+                    g.setTest(1);
+                    startActivity(refreshIntent);
+                }else{
+                    Toast.makeText(ViewPlan.this,"Error", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
     }
 
     private void archive_plan(String plan_id) {
