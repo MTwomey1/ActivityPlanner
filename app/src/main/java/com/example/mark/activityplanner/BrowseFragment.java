@@ -53,6 +53,7 @@ public class BrowseFragment extends Fragment implements View.OnClickListener, Se
     TextView emptyText;
     String username;
     private CompositeSubscription mSubscriptions;
+    private TextView tv_suggestion_message;
 
 
     public BrowseFragment() {
@@ -75,6 +76,7 @@ public class BrowseFragment extends Fragment implements View.OnClickListener, Se
         listView = view.findViewById(R.id.user_list_id);
         listView2 = view.findViewById(R.id.suggestions_list_id);
         emptyText = view.findViewById(R.id.tv_empty_id);
+        tv_suggestion_message = view.findViewById(R.id.tv_suggestion_message);
 
         adapter = new ArrayAdapter<String>(this.getActivity(), android.R.layout.simple_list_item_1, listItems);
         listView.setAdapter(adapter);
@@ -126,6 +128,7 @@ public class BrowseFragment extends Fragment implements View.OnClickListener, Se
             String name1 = friendslist.get(i);
             if(!name1.equals(username)) {
                 adapter2.add(name1);
+                tv_suggestion_message.setVisibility(View.GONE);
             }
         }
     }
