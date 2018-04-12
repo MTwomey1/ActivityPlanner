@@ -8,6 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.TimePicker;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -86,6 +88,7 @@ class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
             mTitle = itemView.findViewById(R.id.title);
             mImageView = itemView.findViewById(R.id.image);
         }
+
     }
 
 }

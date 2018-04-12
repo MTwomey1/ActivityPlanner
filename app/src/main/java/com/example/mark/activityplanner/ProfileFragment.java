@@ -29,6 +29,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.example.mark.activityplanner.network.RetrofitRequest;
 import com.example.mark.activityplanner.utils.Friends;
 import com.example.mark.activityplanner.utils.Upload;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -36,6 +37,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -76,6 +79,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     private ImageButton ib_right, ib_left;
 
     private DatabaseReference mDatabaseRef, mDatabaseRef2;
+    private FirebaseStorage mStorage;
     private ValueEventListener listener;
     private List<Upload> mUploads, mUploads2;
 
@@ -117,6 +121,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
 
         mDatabaseRef = FirebaseDatabase.getInstance().getReference("users/"+username+"/images");
         mDatabaseRef2 = FirebaseDatabase.getInstance().getReference("users/"+username);
+        mStorage = FirebaseStorage.getInstance();
 
         getActivities(username);
 
@@ -154,6 +159,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                 tv_message.setVisibility(View.GONE);
                 for(DataSnapshot postSnapshot : dataSnapshot.getChildren()){
                     Upload upload = postSnapshot.getValue(Upload.class);
+                    upload.setKey(postSnapshot.getKey());
                     mUploads.add(upload);
                 }
 
@@ -171,6 +177,21 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
 
         // Inflate the layout for this fragment
         return view;
+    }
+
+    private void delete(){
+        int position = 0; //fake data
+        Upload selectedItem = mUploads.get(position);
+        String selectedKey = selectedItem.getKey();
+
+        StorageReference imageRef = mStorage.getReferenceFromUrl(selectedItem.getImageUrl());
+        imageRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                mDatabaseRef.child(selectedKey).removeValue();
+                Toast.makeText(getContext(), "Image deleted", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void getProfileImage() {

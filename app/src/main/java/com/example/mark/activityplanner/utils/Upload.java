@@ -1,5 +1,7 @@
 package com.example.mark.activityplanner.utils;
 
+import com.google.firebase.database.Exclude;
+
 /**
  * Created by Mark on 27/03/2018.
  */
@@ -7,6 +9,7 @@ package com.example.mark.activityplanner.utils;
 public class Upload {
     private String mName;
     private String mImageUrl;
+    private String mKey;
 
     public Upload(){
         // Empty constructor needed
@@ -35,5 +38,15 @@ public class Upload {
 
     public void setImageUrl(String imageUrl){
         mImageUrl = imageUrl;
+    }
+
+    @Exclude
+    public String getKey() {
+        return mKey;
+    }
+
+    @Exclude
+    public void setKey(String key) {
+        mKey = key;
     }
 }
