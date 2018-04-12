@@ -118,28 +118,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         mDatabaseRef = FirebaseDatabase.getInstance().getReference("users/"+username+"/images");
         mDatabaseRef2 = FirebaseDatabase.getInstance().getReference("users/"+username);
 
-        if(sharedPref.contains("Activities")) {
-            Set<String> set = sharedPref.getStringSet("Activities", null);
-
-            if(String.valueOf(set).equals("[]")){
-                tv_activities.setText("Click on Edit button below to add interests!");
-            }else {
-                List<String> sample = new ArrayList<String>(set);
-
-                sample.sort(new Comparator<String>() {
-                    @Override
-                    public int compare(String lhs, String rhs) {
-                        return lhs.compareTo(rhs);
-                    }
-                });
-
-                String check = sample.toString().replace("[", "").replace("]", "");
-                //if (check.equals(""))
-                tv_activities.setText(sample.toString().replace("[", "").replace("]", ""));
-            }
-        }else{
-            getActivities(username);
-        }
+        getActivities(username);
 
         if(sharedPref.contains("profileImage")){
             profileImage = sharedPref.getString("profileImage","");
@@ -148,7 +127,6 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         else{
             getProfileImage();
         }
-
 
         mUploads = new ArrayList<>();
         //for (int i = 1; i < 11; i++) {
@@ -277,15 +255,12 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         if(tv_activities.getText().equals("")){
             tv_activities.setText("Click on Edit button below to add interests!");
         }
-
-        //String tv_act = tv_activities.getText().toString();
-        //tv_act = tv_act.substring(0, tv_act.length() - 2);
-        //tv_activities.setText(tv_act);
-
-        SharedPreferences sharedPref = this.getActivity().getSharedPreferences("userInfo", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putStringSet("Activities", set);
-        editor.apply();
+        else{
+            SharedPreferences sharedPref = this.getActivity().getSharedPreferences("userInfo", Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPref.edit();
+            editor.putStringSet("Activities", set);
+            editor.apply();
+        }
     }
 
     private void handleError(Throwable error) {
